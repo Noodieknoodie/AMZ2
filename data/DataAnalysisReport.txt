@@ -1,0 +1,57 @@
+Data Types and Missing Values:
+None
+Summary Statistics for Numeric Fields:
+       ResponseTimeMinutes     CSATScore
+count         78682.000000  84986.000000
+mean            121.776747      4.244617
+std             446.257554      1.376501
+min               0.000000      1.000000
+25%               2.000000      4.000000
+50%               5.000000      5.000000
+75%              28.000000      5.000000
+max            5721.000000      5.000000
+Missing Values in Each Column:
+ChannelName                   0
+TicketCategory                0
+TicketSubCategory             0
+CustomerRemarks           56530
+OrderDateTime             67891
+IssueReportedDateTime         0
+IssueRespondedDateTime        0
+ResponseTimeMinutes        6304
+SurveyResponseDate            0
+ProductCategory           67909
+AgentName                     0
+SupervisorName                0
+ManagerName                   0
+AgentTenure                   0
+AgentShift                    0
+CSATScore                     0
+dtype: int64
+Unique Values in Each Column:
+ChannelName: 3 unique values
+TicketCategory: 12 unique values
+TicketSubCategory: 52 unique values
+CustomerRemarks: 17441 unique values
+OrderDateTime: 7047 unique values
+IssueReportedDateTime: 30826 unique values
+IssueRespondedDateTime: 30167 unique values
+ResponseTimeMinutes: 2596 unique values
+SurveyResponseDate: 31 unique values
+ProductCategory: 9 unique values
+AgentName: 1371 unique values
+SupervisorName: 40 unique values
+ManagerName: 6 unique values
+AgentTenure: 5 unique values
+AgentShift: 5 unique values
+CSATScore: 5 unique values
+
+First Few Rows of Data:
+  ChannelName   TicketCategory             TicketSubCategory  ...      AgentTenure AgentShift CSATScore
+0     Outcall  Product Queries  Product Specific Information  ...              >90    Morning         5
+1     Inbound    Order Related             Installation/demo  ...  On Job Training    Evening         5
+2     Inbound          Returns        Reverse Pickup Enquiry  ...              >90    Evening         5
+3     Inbound     Cancellation                    Not Needed  ...             0-30    Morning         5
+4       Email          Returns               Fraudulent User  ...             0-30    Morning         5
+
+[5 rows x 16 columns]
