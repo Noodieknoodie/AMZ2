@@ -16,12 +16,13 @@ from machine_learning_models import train_and_evaluate_models
 from insights_generator import generate_insights
 
 def main():
+    st.set_page_config(page_title='Customer Satisfaction Analysis Dashboard', layout='wide')
     # Load CSS
     with open('style.css') as f:
         st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
-
-    st.set_page_config(page_title='Customer Satisfaction Analysis Dashboard', layout='wide')
     data = load_and_preprocess_data()
+    ...
+
 
 
     # Sidebar filters using direct category selection, properly handling 'All' cases
