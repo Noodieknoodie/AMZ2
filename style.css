@@ -1,73 +1,65 @@
-/* style.css */
-
-/* Set background color and font */
-body {
-    background-color: #f0f0f0;
-    font-family: Arial, sans-serif;
+:root {
+    --primary-color: #1e88e5;
+    --background-color: #f0f0f0;
+    --text-color: #333;
+    --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --border-radius: 8px;
+    --transition-speed: 0.3s;
 }
 
-/* Style the title */
+body {
+    background-color: var(--background-color);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: var(--text-color);
+}
+
 h1 {
-    color: #1e88e5;
+    color: var(--primary-color);
     font-size: 36px;
     font-weight: bold;
     margin-bottom: 20px;
 }
 
-/* Style the sidebar */
 .sidebar .sidebar-content {
     background-color: #ffffff;
     padding: 20px;
-    border-radius: 5px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
 }
 
 .sidebar .title {
-    color: #1e88e5;
+    color: var(--primary-color);
     font-size: 24px;
     font-weight: bold;
     margin-bottom: 10px;
 }
 
-/* Style the main content */
-.main .plotly-chart {
+.main .plotly-chart, .main .expander, .model-evaluation {
     background-color: #ffffff;
     padding: 20px;
-    border-radius: 5px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
     margin-bottom: 20px;
+    transition: box-shadow var(--transition-speed);
+}
+
+.main .plotly-chart:hover, .main .expander:hover, .model-evaluation:hover {
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
 }
 
 .main .slider {
     margin-bottom: 20px;
 }
 
-.main .expander {
-    background-color: #ffffff;
-    padding: 20px;
-    border-radius: 5px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    margin-bottom: 20px;
-}
-
 .main .expander-header {
-    color: #1e88e5;
+    color: var(--primary-color);
     font-size: 20px;
     font-weight: bold;
     margin-bottom: 10px;
 }
 
-/* Style the model evaluation section */
-.model-evaluation {
-    background-color: #ffffff;
-    padding: 20px;
-    border-radius: 5px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    margin-bottom: 20px;
-}
-
 .model-evaluation .subheader {
-    color: #1e88e5;
+    color: var(--primary-color);
     font-size: 24px;
     font-weight: bold;
     margin-bottom: 10px;

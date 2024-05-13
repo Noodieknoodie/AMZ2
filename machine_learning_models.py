@@ -7,9 +7,8 @@ import plotly.graph_objects as go
 import plotly.figure_factory as ff
 
 def split_data(data, target_column, test_size=0.2, random_state=42):
-    data_filtered = data[(data['HasCustomerRemarks']) & (data['HasProductCategory']) & (data['HasResponseTime'])]  # Filter out rows with missing data
-    X = data_filtered.drop(columns=[target_column, 'CustomerRemarks', 'ProductCategory', 'ResponseTimeMinutes', 'HasCustomerRemarks', 'HasProductCategory', 'HasResponseTime'])
-    y = data_filtered[target_column]
+    X = data.drop(columns=[target_column])  # Use all other columns as features
+    y = data[target_column]
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size, random_state=random_state)
     return X_train, X_test, y_train, y_test
 
@@ -32,19 +31,7 @@ def evaluate_model(model, X_test, y_test):
     cm = confusion_matrix(y_test, y_pred)
     fpr, tpr, _ = roc_curve(y_test, model.predict_proba(X_test)[:, 1])
     roc_auc = auc(fpr, tpr)
-    
-    # Evaluate model performance separately for cases with and without missing values
-    X_test_missing = X_test[(X_test['HasCustomerRemarks'] == False) | (X_test['HasProductCategory'] == False) | (X_test['HasResponseTime'] == False)]
-    y_test_missing = y_test.loc[X_test_missing.index]
-    y_pred_missing = model.predict(X_test_missing)
-    accuracy_missing = accuracy_score(y_test_missing, y_pred_missing)
-    
-    X_test_complete = X_test[(X_test['HasCustomerRemarks'] == True) & (X_test['HasProductCategory'] == True) & (X_test['HasResponseTime'] == True)]
-    y_test_complete = y_test.loc[X_test_complete.index]
-    y_pred_complete = model.predict(X_test_complete)
-    accuracy_complete = accuracy_score(y_test_complete, y_pred_complete)
-    
-    return accuracy, precision, recall, f1, cm, fpr, tpr, roc_auc, accuracy_missing, accuracy_complete
+    return accuracy, precision, recall, f1, cm, fpr, tpr, roc_auc
 
 def plot_confusion_matrix(cm, labels):
     fig = ff.create_annotated_heatmap(cm, x=labels, y=labels, colorscale='Viridis')
@@ -61,10 +48,10 @@ def train_and_evaluate_models(data, target_column):
     X_train, X_test, y_train, y_test = split_data(data, target_column)
     dt_model = train_decision_tree(X_train, y_train)
     rf_model = train_random_forest(X_train, y_train)
-    dt_accuracy, dt_precision, dt_recall, dt_f1, dt_cm, dt_fpr, dt_tpr, dt_roc_auc, dt_accuracy_missing, dt_accuracy_complete = evaluate_model(dt_model, X_test, y_test)
-    rf_accuracy, rf_precision, rf_recall, rf_f1, rf_cm, rf_fpr, rf_tpr, rf_roc_auc, rf_accuracy_missing, rf_accuracy_complete = evaluate_model(rf_model, X_test, y_test)
+    dt_accuracy, dt_precision, dt_recall, dt_f1, dt_cm, dt_fpr, dt_tpr, dt_roc_auc = evaluate_model(dt_model, X_test, y_test)
+    rf_accuracy, rf_precision, rf_recall, rf_f1, rf_cm, rf_fpr, rf_tpr, rf_roc_auc = evaluate_model(rf_model, X_test, y_test)
     dt_cm_fig = plot_confusion_matrix(dt_cm, labels=list(data[target_column].unique()))
     rf_cm_fig = plot_confusion_matrix(rf_cm, labels=list(data[target_column].unique()))
     dt_roc_fig = plot_roc_curve(dt_fpr, dt_tpr, dt_roc_auc, 'Decision Tree')
     rf_roc_fig = plot_roc_curve(rf_fpr, rf_tpr, rf_roc_auc, 'Random Forest')
-    return dt_model, rf_model, dt_accuracy, dt_precision, dt_recall, dt_f1, dt_cm_fig, dt_roc_fig, dt_accuracy_missing, dt_accuracy_complete, rf_accuracy, rf_precision, rf_recall, rf_f1, rf_cm_fig, rf_roc_fig, rf_accuracy_missing, rf_accuracy_complete
+    return dt_model, rf_model, dt_accuracy, dt_precision, dt_recall, dt_f1, dt_cm_fig, dt_roc_fig, rf_accuracy, rf_precision, rf_recall, rf_f1, rf_cm_fig, rf_roc_fig

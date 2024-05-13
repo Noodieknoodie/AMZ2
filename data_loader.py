@@ -1,36 +1,23 @@
+# data_loader.py
 import pandas as pd
 import streamlit as st
 
 @st.cache_data
 def load_data(file_path):
-    data = pd.read_csv(file_path)
+    # Assuming blanks are represented by empty strings in the CSV
+    data = pd.read_csv(file_path, na_values=['', ' '])
     return data
 
 @st.cache_data
 def preprocess_data(data):
-    # Create new boolean features for missing values
+    # Create indicators for missing data
     data['HasCustomerRemarks'] = data['CustomerRemarks'].notna()
-    data['CustomerRemarks'].fillna('', inplace=True)  # Replace missing values with an empty string
-    
+    data['HasResponseTime'] = data['ResponseTimeMinutes'].notna()
     data['HasProductCategory'] = data['ProductCategory'].notna()
-    data['ProductCategory'].fillna('Unknown', inplace=True)  # Keep 'Unknown' category
     
-    data['HasResponseTime'] = data['ResponseTimeMinutes'] != 'ERROR'
-    data['ResponseTimeMinutes'] = pd.to_numeric(data['ResponseTimeMinutes'], errors='coerce')  # Convert 'ERROR' to NaN
-    
-    # Convert date columns and handle missing dates
-    date_columns = ['OrderDateTime', 'SurveyResponseDate']
-    for column in date_columns:
-        data[column] = pd.to_datetime(data[column], errors='coerce')
-    data['OrderDateTime'].fillna(method='ffill', inplace=True)
-    
-    # One-hot encoding for categorical columns
-    categorical_columns = [
-        'ChannelName', 'TicketCategory', 'TicketSubCategory', 'AgentName',
-        'SupervisorName', 'ManagerName', 'AgentTenure', 'AgentShift', 'ProductCategory'
-    ]
-    data = pd.get_dummies(data, columns=categorical_columns, drop_first=True)
-    
+    # One-hot encoding for categorical features
+    categorical_features = ['ChannelName', 'AgentShift', 'TicketCategory', 'TicketSubCategory', 'ProductCategory', 'ManagerName', 'SupervisorName']
+    data = pd.get_dummies(data, columns=categorical_features, dummy_na=True)  # Handle NaNs in categorical data
     return data
 
 @st.cache_data
