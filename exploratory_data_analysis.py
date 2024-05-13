@@ -19,6 +19,14 @@ def plot_ticket_category_vs_csat_score(data):
     fig.update_layout(title='Ticket Category vs CSAT Score', xaxis_title='Ticket Category', yaxis_title='Ticket Subcategory')
     return fig
 
+def plot_response_time_vs_csat_score(data):
+    fig = px.bar(data.groupby('ResponseTimeMinutes', as_index=False).agg({'CSATScore': 'mean', 'AgentName': 'count'}), 
+                 x='ResponseTimeMinutes', y='CSATScore', hover_data=['AgentName'], 
+                 color='CSATScore', color_continuous_scale='Viridis',
+                 category_orders={'ResponseTimeMinutes': ['ERROR'] + [str(x) for x in sorted(data['ResponseTimeMinutes'].unique()) if str(x) != 'ERROR']})  # Explicitly include 'ERROR' category
+    fig.update_layout(title='Response Time vs CSAT Score', xaxis_title='Response Time (Minutes)', yaxis_title='Average CSAT Score')
+    return fig
+
 def generate_customer_remarks_wordcloud(data):
     text = ' '.join(data['CustomerRemarks'].fillna('').astype(str))
     wordcloud = WordCloud(width=800, height=400, background_color='white').generate(text)

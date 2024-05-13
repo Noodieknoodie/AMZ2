@@ -3,27 +3,23 @@ import streamlit as st
 from dtreeviz import dtreeviz
 import plotly.express as px
 from data_loader import load_and_preprocess_data
-from exploratory_data_analysis import plot_csat_score_distribution, plot_agent_tenure_vs_csat_score, plot_ticket_category_vs_csat_score, generate_customer_remarks_wordcloud
+from exploratory_data_analysis import plot_csat_score_distribution, plot_agent_tenure_vs_csat_score, plot_ticket_category_vs_csat_score, plot_response_time_vs_csat_score, generate_customer_remarks_wordcloud
 from feature_selection import perform_feature_selection
 from machine_learning_models import train_and_evaluate_models
 from insights_generator import generate_insights
 
 def main():
     st.set_page_config(page_title='Customer Satisfaction Analysis Dashboard', layout='wide')
-
     # Load CSS file for styling
     with open('style.css') as f:
         st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
-
     # Load and preprocess data
     data = load_and_preprocess_data()
-
     # Sidebar filters
     st.sidebar.title('Filters')
     channel_filter = st.sidebar.multiselect('Channel', ['All'] + ['Outbound', 'Inbound', 'Email'], default=['All'])
     shift_filter = st.sidebar.multiselect('Agent Shift', ['All'] + ['Morning', 'Afternoon', 'Evening', 'Split'], default=['All'])
     category_filter = st.sidebar.multiselect('Product Category', ['All'] + ['Unknown', 'LifeStyle', 'Electronics', 'Mobile', 'Home Appliances', 'Furniture', 'Home', 'Books & General merchandise', 'GiftCard', 'Affiliates'], default=['All'])
-
     # Apply filters
     if 'All' not in channel_filter:
         channel_cols = [f'ChannelName_{option}' for option in channel_filter]
@@ -34,47 +30,42 @@ def main():
     if 'All' not in category_filter:
         category_cols = [f'ProductCategory_{option}' for option in category_filter]
         data = data.loc[data[category_cols].sum(axis=1) > 0]
-
     # Title and introduction
     st.title('Customer Satisfaction Analysis Dashboard')
     st.write('This dashboard presents an analysis of customer satisfaction based on the provided dataset.')
-
     # CSAT Score Distribution
     csat_score_distribution = plot_csat_score_distribution(data)
     st.plotly_chart(csat_score_distribution, use_container_width=True)
-
     # Key Factors Influencing CSAT Scores
     rf_top_features, _ = perform_feature_selection(data, 'CSATScore', 10)
     top_features_slider = st.slider('Number of Top Features', min_value=5, max_value=len(rf_top_features), value=10, step=1)
     top_features_fig = px.bar(rf_top_features.head(top_features_slider), x='Importance', y='Feature', orientation='h', color='Importance', color_continuous_scale='Viridis')
     top_features_fig.update_layout(title=f'Top {top_features_slider} Factors Influencing CSAT Scores', xaxis_title='Importance', yaxis_title='Feature', plot_bgcolor='rgba(0,0,0,0)')
     st.plotly_chart(top_features_fig, use_container_width=True)
-
     # Decision Tree Visualization
-    dt_model, rf_model, dt_accuracy, dt_precision, dt_recall, dt_f1, dt_cm_fig, dt_roc_fig, \
-    rf_accuracy, rf_precision, rf_recall, rf_f1, rf_cm_fig, rf_roc_fig = train_and_evaluate_models(data, 'CSATScore')
+    dt_model, rf_model, dt_accuracy, dt_precision, dt_recall, dt_f1, dt_cm_fig, dt_roc_fig, dt_accuracy_missing, dt_accuracy_complete, rf_accuracy, rf_precision, rf_recall, rf_f1, rf_cm_fig, rf_roc_fig, rf_accuracy_missing, rf_accuracy_complete = train_and_evaluate_models(data, 'CSATScore')
     st.pyplot(dtreeviz(dt_model, data.drop(columns=['CSATScore']), data['CSATScore'], target_name="CSATScore", feature_names=data.drop(columns=['CSATScore']).columns, class_names=list(map(str, data['CSATScore'].unique())), scale=1.5, orientation='LR', fancy=True, histtype='strip'))
-
     # Agent Tenure vs CSAT Score
     agent_tenure_vs_csat_score = plot_agent_tenure_vs_csat_score(data)
     st.plotly_chart(agent_tenure_vs_csat_score, use_container_width=True)
-
     # Ticket Category vs CSAT Score
     ticket_category_vs_csat_score = plot_ticket_category_vs_csat_score(data)
     st.plotly_chart(ticket_category_vs_csat_score, use_container_width=True)
-
+    # Response Time vs CSAT Score
+    response_time_vs_csat_score = plot_response_time_vs_csat_score(data)
+    st.plotly_chart(response_time_vs_csat_score, use_container_width=True)
     # Customer Remarks Word Cloud
     wordcloud = generate_customer_remarks_wordcloud(data)
     st.image(wordcloud.to_array(), use_column_width=True)
-
     # Actionable Insights
     generate_insights(data, rf_top_features)
-
     # Model Evaluation
     col1, col2 = st.columns(2)
     with col1:
         st.subheader('Decision Tree')
-        st.write(f'Accuracy: {dt_accuracy:.2f}')
+        st.write(f'Overall Accuracy: {dt_accuracy:.2f}')
+        st.write(f'Accuracy (Missing Values): {dt_accuracy_missing:.2f}')
+        st.write(f'Accuracy (Complete Data): {dt_accuracy_complete:.2f}')
         st.write(f'Precision: {dt_precision:.2f}')
         st.write(f'Recall: {dt_recall:.2f}')
         st.write(f'F1-score: {dt_f1:.2f}')
@@ -82,12 +73,21 @@ def main():
         st.plotly_chart(dt_roc_fig, use_container_width=True)
     with col2:
         st.subheader('Random Forest')
-        st.write(f'Accuracy: {rf_accuracy:.2f}')
+        st.write(f'Overall Accuracy: {rf_accuracy:.2f}')
+        st.write(f'Accuracy (Missing Values): {rf_accuracy_missing:.2f}')
+        st.write(f'Accuracy (Complete Data): {rf_accuracy_complete:.2f}')
         st.write(f'Precision: {rf_precision:.2f}')
         st.write(f'Recall: {rf_recall:.2f}')
         st.write(f'F1-score: {rf_f1:.2f}')
         st.plotly_chart(rf_cm_fig, use_container_width=True)
         st.plotly_chart(rf_roc_fig, use_container_width=True)
+    # Missing Data Impact on CSAT Scores
+    missing_data_impact_fig = px.bar(data.groupby(['HasCustomerRemarks', 'HasProductCategory', 'HasResponseTime'], as_index=False)['CSATScore'].mean(), 
+                                     x=['HasCustomerRemarks', 'HasProductCategory', 'HasResponseTime'], y='CSATScore', 
+                                     color_discrete_sequence=['#FF4136', '#2ECC40'])
+    missing_data_impact_fig.update_layout(title='Impact of Missing Data on CSAT Scores', 
+                                          xaxis_title='Data Completeness', yaxis_title='Average CSAT Score')
+    st.plotly_chart(missing_data_impact_fig, use_container_width=True)
 
 if __name__ == '__main__':
     main()
