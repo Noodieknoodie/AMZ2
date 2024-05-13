@@ -1,4 +1,4 @@
-# data_loader.py
+#data_loader.py
 import pandas as pd
 import streamlit as st
 
@@ -15,9 +15,13 @@ def preprocess_data(data):
     data['HasResponseTime'] = data['ResponseTimeMinutes'].notna()
     data['HasProductCategory'] = data['ProductCategory'].notna()
     
-    # One-hot encoding for categorical features
-    categorical_features = ['ChannelName', 'AgentShift', 'TicketCategory', 'TicketSubCategory', 'ProductCategory', 'ManagerName', 'SupervisorName']
-    data = pd.get_dummies(data, columns=categorical_features, dummy_na=True)  # Handle NaNs in categorical data
+    # Selecting features for one-hot encoding
+    categorical_features = ['TicketCategory', 'TicketSubCategory', 'ManagerName', 'SupervisorName']
+    # Apply one-hot encoding to the selected features
+    data = pd.concat([data, pd.get_dummies(data[categorical_features], prefix=categorical_features, dummy_na=True)], axis=1)
+    data.drop(columns=categorical_features, inplace=True)
+    
+    # Retain 'ChannelName', 'AgentShift', 'ProductCategory' for filtering
     return data
 
 @st.cache_data

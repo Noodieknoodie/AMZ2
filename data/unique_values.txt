@@ -1,0 +1,24 @@
+Unique values in ChannelName:
+Outcall
+Inbound
+Email
+
+Unique values in AgentShift:
+Morning
+Evening
+Split
+Afternoon
+Night
+
+Unique values in ProductCategory:
+BLANK
+LifeStyle
+Electronics
+Mobile
+Home Appliances
+Furniture
+Home
+Books & General merchandise
+GiftCard
+Affiliates
+

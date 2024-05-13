@@ -20,24 +20,41 @@ def main():
     # Load CSS
     with open('style.css') as f:
         st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
+    
+    # Load and preprocess data
     data = load_and_preprocess_data()
-    ...
-
-
 
     # Sidebar filters using direct category selection, properly handling 'All' cases
     st.sidebar.title('Filters')
-    channel_filter = st.sidebar.multiselect('Channel', options=['All'] + sorted(data['ChannelName'].dropna().unique()), default=['All'])
-    shift_filter = st.sidebar.multiselect('Agent Shift', options=['All'] + sorted(data['AgentShift'].dropna().unique()), default=['All'])
-    category_filter = st.sidebar.multiselect('Product Category', options=['All'] + sorted(data['ProductCategory'].dropna().unique()), default=['All'])
+    # Extract unique values directly from the data columns
+    channel_options = ['All'] + sorted(data['ChannelName'].dropna().unique().tolist())
+    shift_options = ['All'] + sorted(data['AgentShift'].dropna().unique().tolist())
+    # Include 'None' for missing ProductCategory values
+    category_options = ['All', 'None'] + sorted(data['ProductCategory'].dropna().unique().tolist())
 
+    # Use these options for the multiselect widgets
+    channel_filter = st.sidebar.multiselect('Channel', options=channel_options, default=['All'])
+    shift_filter = st.sidebar.multiselect('Agent Shift', options=shift_options, default=['All'])
+    category_filter = st.sidebar.multiselect('Product Category', options=category_options, default=['All'])
+
+    # Apply filters based on user selection
     if 'All' not in channel_filter:
         data = data[data['ChannelName'].isin(channel_filter)]
     if 'All' not in shift_filter:
         data = data[data['AgentShift'].isin(shift_filter)]
     if 'All' not in category_filter:
-        data = data[data['ProductCategory'].isin(category_filter)]
+        if 'None' in category_filter:
+            # Handle entries with missing ProductCategory
+            if len(category_filter) == 1:
+                data = data[data['ProductCategory'].isna()]
+            else:
+                # Include both missing and selected categories
+                selected_categories = [cat for cat in category_filter if cat != 'None']
+                data = data[data['ProductCategory'].isna() | data['ProductCategory'].isin(selected_categories)]
+        else:
+            data = data[data['ProductCategory'].isin(category_filter)]
 
+    # Display the dashboard title and description
     st.title('Customer Satisfaction Analysis Dashboard')
     st.write('This dashboard presents an analysis of customer satisfaction based on the provided dataset.')
 
