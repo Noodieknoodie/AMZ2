@@ -20,10 +20,10 @@ def plot_ticket_category_vs_csat_score(data):
     return fig
 
 def plot_response_time_vs_csat_score(data):
-    fig = px.bar(data.groupby('ResponseTimeMinutes', as_index=False).agg({'CSATScore': 'mean', 'AgentName': 'count'}), 
-                 x='ResponseTimeMinutes', y='CSATScore', hover_data=['AgentName'], 
-                 color='CSATScore', color_continuous_scale='Viridis',
-                 category_orders={'ResponseTimeMinutes': ['ERROR'] + [str(x) for x in sorted(data['ResponseTimeMinutes'].unique()) if str(x) != 'ERROR']})  # Explicitly include 'ERROR' category
+    data_filtered = data[data['HasResponseTime']]  # Filter out rows with 'ERROR' response time
+    fig = px.bar(data_filtered.groupby('ResponseTimeMinutes', as_index=False).agg({'CSATScore': 'mean', 'AgentName': 'count'}),
+                 x='ResponseTimeMinutes', y='CSATScore', hover_data=['AgentName'],
+                 color='CSATScore', color_continuous_scale='Viridis')
     fig.update_layout(title='Response Time vs CSAT Score', xaxis_title='Response Time (Minutes)', yaxis_title='Average CSAT Score')
     return fig
 

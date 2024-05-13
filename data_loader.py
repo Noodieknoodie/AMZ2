@@ -8,29 +8,26 @@ def load_data(file_path):
 
 @st.cache_data
 def preprocess_data(data):
-    # Fill missing values for text and categoricals with a placeholder
-    data['CustomerRemarks'].fillna('No Remarks', inplace=True)
-    data['ProductCategory'].fillna('Unknown', inplace=True)
+    # Create new boolean features for missing values
+    data['HasCustomerRemarks'] = data['CustomerRemarks'].notna()
+    data['CustomerRemarks'].fillna('', inplace=True)  # Replace missing values with an empty string
+    
+    data['HasProductCategory'] = data['ProductCategory'].notna()
+    data['ProductCategory'].fillna('Unknown', inplace=True)  # Keep 'Unknown' category
+    
+    data['HasResponseTime'] = data['ResponseTimeMinutes'] != 'ERROR'
+    data['ResponseTimeMinutes'] = pd.to_numeric(data['ResponseTimeMinutes'], errors='coerce')  # Convert 'ERROR' to NaN
     
     # Convert date columns and handle missing dates
-    date_columns = ['OrderDateTime', 'SurveyResponseDate']  # Removed 'IssueReportedDateTime' and 'IssueRespondedDateTime'
+    date_columns = ['OrderDateTime', 'SurveyResponseDate']
     for column in date_columns:
         data[column] = pd.to_datetime(data[column], errors='coerce')
-    data['OrderDateTime'].fillna(method='ffill', inplace=True)  # Forward fill for missing dates, if appropriate
-    
-    # Handle numeric data
-    data['ResponseTimeMinutes'] = pd.to_numeric(data['ResponseTimeMinutes'], errors='coerce')
-    data['ResponseTimeMinutes'].fillna('ERROR', inplace=True)  # Use 'ERROR' for missing response times
-    
-    # Create new boolean features
-    data['HasCustomerRemarks'] = data['CustomerRemarks'].notna()
-    data['HasProductCategory'] = data['ProductCategory'].notna()
-    data['HasResponseTime'] = data['ResponseTimeMinutes'].notna()
+    data['OrderDateTime'].fillna(method='ffill', inplace=True)
     
     # One-hot encoding for categorical columns
     categorical_columns = [
         'ChannelName', 'TicketCategory', 'TicketSubCategory', 'AgentName',
-        'SupervisorName', 'ManagerName', 'AgentTenure', 'AgentShift', 'ProductCategory', 'ResponseTimeMinutes'  # Added 'ResponseTimeMinutes'
+        'SupervisorName', 'ManagerName', 'AgentTenure', 'AgentShift', 'ProductCategory'
     ]
     data = pd.get_dummies(data, columns=categorical_columns, drop_first=True)
     

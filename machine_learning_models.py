@@ -7,8 +7,9 @@ import plotly.graph_objects as go
 import plotly.figure_factory as ff
 
 def split_data(data, target_column, test_size=0.2, random_state=42):
-    X = data.drop(columns=[target_column])
-    y = data[target_column]
+    data_filtered = data[(data['HasCustomerRemarks']) & (data['HasProductCategory']) & (data['HasResponseTime'])]  # Filter out rows with missing data
+    X = data_filtered.drop(columns=[target_column, 'CustomerRemarks', 'ProductCategory', 'ResponseTimeMinutes', 'HasCustomerRemarks', 'HasProductCategory', 'HasResponseTime'])
+    y = data_filtered[target_column]
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size, random_state=random_state)
     return X_train, X_test, y_train, y_test
 
