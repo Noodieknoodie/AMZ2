@@ -1,6 +1,7 @@
+# feature_selection.py
 import pandas as pd
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.feature_selection import SelectKBest, f_classif
+from sklearn.feature_selection import SelectKBest, chi2
 
 def select_features_with_random_forest(data, target_column, n_features):
     X = data.drop(columns=[target_column]).select_dtypes(include=[int, float])
@@ -13,11 +14,11 @@ def select_features_with_random_forest(data, target_column, n_features):
     top_features = feature_importances_df.nlargest(n_features, 'Importance')
     return top_features
 
-def select_features_with_f_score(data, target_column, n_features):
+def select_features_with_chi2(data, target_column, n_features):
     X = data.drop(columns=[target_column]).select_dtypes(include=[int, float])
     y = data[target_column]
     n_features = min(n_features, X.shape[1])  # Ensure n_features is not greater than the number of available features
-    selector = SelectKBest(f_classif, k=n_features)
+    selector = SelectKBest(chi2, k=n_features)
     selector.fit(X, y)
     feature_scores = selector.scores_
     feature_names = X.columns
@@ -27,5 +28,5 @@ def select_features_with_f_score(data, target_column, n_features):
 
 def perform_feature_selection(data, target_column, n_features):
     rf_top_features = select_features_with_random_forest(data, target_column, n_features)
-    f_score_top_features = select_features_with_f_score(data, target_column, n_features)
-    return rf_top_features, f_score_top_features
+    chi2_top_features = select_features_with_chi2(data, target_column, n_features)
+    return rf_top_features, chi2_top_features

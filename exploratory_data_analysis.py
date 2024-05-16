@@ -1,4 +1,3 @@
-# exploratory_data_analysis.py
 import plotly.express as px
 import plotly.graph_objects as go
 from wordcloud import WordCloud
@@ -16,8 +15,13 @@ def plot_agent_tenure_vs_csat_score(data):
 def plot_ticket_category_vs_csat_score(data):
     ticket_category_columns = [col for col in data.columns if col.startswith('TicketCategory_')]
     ticket_subcategory_columns = [col for col in data.columns if col.startswith('TicketSubCategory_')]
-    pivot_data = data.groupby(ticket_subcategory_columns)[['CSATScore'] + ticket_category_columns].mean()
-    fig = go.Figure(data=go.Heatmap(z=pivot_data.values, x=ticket_category_columns, y=pivot_data.index, colorscale='RdYlGn'))
+    pivot_data = data.groupby(ticket_subcategory_columns)['CSATScore'].mean().reset_index()
+    fig = go.Figure(data=go.Heatmap(
+        z=pivot_data['CSATScore'],
+        x=pivot_data[ticket_category_columns].idxmax(axis=1),
+        y=pivot_data[ticket_subcategory_columns].idxmax(axis=1),
+        colorscale='RdYlGn'
+    ))
     fig.update_layout(title='Ticket Category vs CSAT Score', xaxis_title='Ticket Category', yaxis_title='Ticket Subcategory')
     return fig
 
@@ -35,7 +39,18 @@ def generate_customer_remarks_wordcloud(data):
     return wordcloud
 
 def plot_missing_data_impact(data):
-    impact_df = data.groupby(['HasCustomerRemarks', 'HasResponseTime', 'HasProductCategory']).agg({'CSATScore': 'mean'}).reset_index()
-    impact_df['Data Completeness'] = impact_df.apply(lambda row: f"Remarks: {'Yes' if row['HasCustomerRemarks'] else 'No'}, Response Time: {'Yes' if row['HasResponseTime'] else 'No'}, Product Category: {'Yes' if row['HasProductCategory'] else 'No'}", axis=1)
-    fig = px.bar(impact_df, x='Data Completeness', y='CSATScore', title='Impact of Missing Data on CSAT Scores', labels={'CSATScore': 'Average CSAT Score'})
+    missing_data_columns = ['HasCustomerRemarks', 'HasResponseTime', 'HasProductCategory']
+    fig = go.Figure()
+
+    for column in missing_data_columns:
+        impact_df = data.groupby(column).agg({'CSATScore': 'mean'}).reset_index()
+        impact_df[column] = impact_df[column].map({True: 'Present', False: 'Missing'})
+        fig.add_trace(go.Bar(x=impact_df[column], y=impact_df['CSATScore'], name=column.replace('Has', '')))
+
+    fig.update_layout(
+        title='Impact of Missing Data on CSAT Scores',
+        xaxis_title='Data Completeness',
+        yaxis_title='Average CSAT Score',
+        barmode='group'
+    )
     return fig

@@ -14,7 +14,7 @@ def get_agent_tenure_with_highest_csat(data):
 def get_ticket_category_subcategory_with_lowest_csat(data, n=3):
     ticket_category_columns = [col for col in data.columns if col.startswith('TicketCategory_')]
     ticket_subcategory_columns = [col for col in data.columns if col.startswith('TicketSubCategory_')]
-    ticket_csat = data.groupby(ticket_subcategory_columns)[['CSATScore'] + ticket_category_columns].mean().reset_index()
+    ticket_csat = data.groupby(ticket_subcategory_columns)['CSATScore'].mean().reset_index()
     ticket_csat['TicketCategory'] = ticket_csat[ticket_category_columns].idxmax(axis=1).str.replace('TicketCategory_', '')
     ticket_csat['TicketSubCategory'] = ticket_csat[ticket_subcategory_columns].idxmax(axis=1).str.replace('TicketSubCategory_', '')
     lowest_csat_tickets = ticket_csat.nsmallest(n, 'CSATScore')

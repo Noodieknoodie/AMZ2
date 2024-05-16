@@ -1,3 +1,4 @@
+# data_loader.py
 import pandas as pd
 import streamlit as st
 from sklearn.impute import SimpleImputer
@@ -13,21 +14,21 @@ def preprocess_data(data):
     data['HasCustomerRemarks'] = data['CustomerRemarks'].notna()
     data['HasResponseTime'] = data['ResponseTimeMinutes'].notna()
     data['HasProductCategory'] = data['ProductCategory'].notna()
-    
+
     # Convert ResponseTimeMinutes to numeric, coercing errors to NaN
     data['ResponseTimeMinutes'] = pd.to_numeric(data['ResponseTimeMinutes'], errors='coerce')
-    
-    # Categorical features for one-hot encoding, exclude features used in front-end filters
-    categorical_features = ['TicketCategory', 'TicketSubCategory', 'ManagerName', 'SupervisorName']
+
+    # Categorical features for one-hot encoding, including ChannelName and ProductCategory
+    categorical_features = ['ChannelName', 'TicketCategory', 'TicketSubCategory', 'ManagerName', 'SupervisorName', 'ProductCategory']
     data_encoded = pd.get_dummies(data[categorical_features], prefix=categorical_features, dummy_na=True)
     data.drop(columns=categorical_features, inplace=True)
     data = pd.concat([data, data_encoded], axis=1)
-    
-    # Impute missing numeric values
-    numeric_features = data.select_dtypes(include=[float, int]).columns
+
+    # Impute missing numeric values, excluding ResponseTimeMinutes
+    numeric_features = data.select_dtypes(include=[float, int]).columns.drop('ResponseTimeMinutes')
     imputer = SimpleImputer(strategy='mean')
     data[numeric_features] = imputer.fit_transform(data[numeric_features])
-    
+
     return data
 
 @st.cache_data
