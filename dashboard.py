@@ -34,7 +34,7 @@ def main():
 
     # Extract unique values from the one-hot encoded columns
     channel_columns = [col.replace('ChannelName_', '') for col in data.columns if col.startswith('ChannelName_')]
-    shift_columns = [col.replace('AgentShift_', '') for col in data.columns if col.startswith('AgentShift_')]
+    shift_columns = [col.replace('AgentShift_', '') for col in data.columns if col.startswith('AgentShift_') and col != 'AgentShift_nan']
     category_columns = [col.replace('ProductCategory_', '') for col in data.columns if col.startswith('ProductCategory_')]
 
     # Add "ALL" option to each filter

@@ -19,7 +19,7 @@ def preprocess_data(data):
     data['ResponseTimeMinutes'] = pd.to_numeric(data['ResponseTimeMinutes'], errors='coerce')
 
     # Categorical features for one-hot encoding, including ChannelName and ProductCategory
-    categorical_features = ['ChannelName', 'TicketCategory', 'TicketSubCategory', 'ManagerName', 'SupervisorName', 'ProductCategory']
+    categorical_features = ['ChannelName', 'TicketCategory', 'TicketSubCategory', 'ManagerName', 'SupervisorName', 'ProductCategory', 'AgentShift']
     data_encoded = pd.get_dummies(data[categorical_features], prefix=categorical_features, dummy_na=True)
     data.drop(columns=categorical_features, inplace=True)
     data = pd.concat([data, data_encoded], axis=1)
