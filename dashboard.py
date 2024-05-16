@@ -25,7 +25,11 @@ def main():
     # Load and preprocess data
     data = load_and_preprocess_data()
 
-    # Sidebar filters using one-hot encoded columns
+    # Sidebar title and description
+    st.sidebar.write('Use the filters below to refine the data displayed in the dashboard.')
+
+    # Date range filter
+    date_range = st.sidebar.date_input("Select Date Range", [])
     st.sidebar.title('Filters')
 
     # Extract unique values from the one-hot encoded columns
