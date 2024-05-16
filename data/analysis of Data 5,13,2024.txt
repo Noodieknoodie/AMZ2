@@ -1,3 +1,5 @@
+## IN THE ACTUAL DATA THERE IS NO "Nan" value. Its used here for showing purposes only for YOU
+
 Sample of First 20 Rows:
 ChannelName  TicketCategory            TicketSubCategory                                                                           CustomerRemarks  ResponseTimeMinutes ProductCategory           AgentName SupervisorName     ManagerName     AgentTenure AgentShift  CSATScore
     Outcall Product Queries Product Specific Information                                                                                       NaN                  2.0             NaN       Vicki Collins      Dylan Kim     Michael Lee             >90    Morning          5

@@ -1,0 +1,502 @@
+--------- START OF PROMPT ---------
+
+Listen, listen. I have this code file, but I'm not joking. I have gone back and forth with you, ChatGPT, and other message over 50 times, and I cannot get the error messages to go away in the terminal. And it's the same ones repeating over and over again. I don't know much about coding, but I know that it stems from certain items having to be converted to float from string or something like that. The reason why it's complicated is because it's using machine learning or some sort of advanced modules in which only numeric values are allowed to be used. And so they use something called one-hot encoding, which I know you are aware of. However, there are also times in the app where one-hot coding is not used because of things like the user drop-down filter menu and stuff like that. The deal is, I frankly don't give a fuck how it's completed or how it works as long as on the front end, in my experience, everything works.
+
+
+I swear that when I tell you instructions and then you look at the code it's like you just believe the code in front of you and try to make as minimal changes as possible to keep the code intact but fix one little thing and that little thing never ever has worked for the last 50 messages so I am I'm not even asking you I'm begging you to really try to understand the entire code as a whole and all the codes together and understand the raw data from the samples which is printed verbatim along with all the measurements you could ever ask for about the raw data this includes a value types samples like I have gone beyond way beyond what a normal user would do to put together an entire package for you to be as efficiently and optimally trained on everything as possible but still I swear it's like you just do the bare minimum and just get yourself in a fucking rut over and over and over again and it's like bro please actually realize the issue here it could be multi-step and you know what maybe the whole fucking thing just won't fucking work in the end maybe it's impossible maybe I'm asking too much but you know what I need you to tell me that if that's the case rather than let me spin around here and waste my whole fucking day doing something that just doesn't work in the end and you know it wouldn't work in the end all along you are my only form of generating code I do not write code on my own you tell me what I should do period do you got it
+
+--------- END OF PROMPT ---------
+
+--------- START OF RAW DATA MEASURMENTS ---------
+
+
+#### This analysis provides insights into the CSV data structure and content, aiding in data processing and understanding. ####
+
+
+CSV Source path: AmazonStreamlit\data\RawAmazonData.csv
+
+
+### Sample of First 20 Rows:
+These rows give a quick glimpse into what types of data the dataset contains and how they are formatted.
+ChannelName  TicketCategory            TicketSubCategory                                                                           CustomerRemarks ResponseTimeMinutes ProductCategory           AgentName SupervisorName     ManagerName     AgentTenure AgentShift  CSATScore
+    Outcall Product Queries Product Specific Information                                                                                                           2.0                       Vicki Collins      Dylan Kim     Michael Lee             >90    Morning          5
+    Inbound   Order Related            Installation/demo                                                                                                          22.0                        Duane Norman   Jackson Park     William Kim On Job Training    Evening          5
+    Inbound         Returns       Reverse Pickup Enquiry                                                                                                          20.0                      Patrick Flores    Olivia Wang      John Smith             >90    Evening          5
+    Inbound    Cancellation                   Not Needed                                                                                                           2.0                 Christopher Sanchez Austin Johnson     Michael Lee            0-30    Morning          5
+      Email         Returns              Fraudulent User                                                                                                         206.0                      Desiree Newton      Emma Park      John Smith            0-30    Morning          5
+    Outcall Product Queries Product Specific Information                                                                                                         501.0                       Shannon Hicks    Aiden Patel      Olivia Tan             >90    Morning          5
+    Inbound         Returns       Exchange / Replacement                                                                                 Very good                 6.0                         Laura Smith  Evelyn Kimura Jennifer Nguyen On Job Training    Evening          5
+    Inbound         Returns                      Missing Shopzilla app and it's all coustomer care services is very good service provided all time                 4.0                         David Smith   Nathan Patel      John Smith             >90      Split          5
+    Inbound     App Related              General Enquiry                                                                                                           5.0                       Tabitha Ayala  Amelia Tanaka     Michael Lee           31-60    Evening          5
+    Outcall         Returns               Return request                                                                                                           2.0                        Carla Morgan   Nathan Patel      Emily Chen            0-30    Evening          4
+    Inbound   Order Related                      Delayed                                                                                  Very bad                30.0       LifeStyle       Stanley Hogan    Harper Wong      Emily Chen             >90      Split          1
+    Inbound     App Related              General Enquiry                                                                                                           3.0                       Timothy Scott   Zoe Yamamoto     William Kim On Job Training    Morning          4
+    Inbound     App Related              General Enquiry                                                                                                          66.0                       Shannon Hicks    Aiden Patel      Olivia Tan             >90    Morning          4
+    Inbound         Returns       Reverse Pickup Enquiry                                                                                                          18.0                         Mark Wilson  Scarlett Chen      John Smith            0-30    Morning          5
+    Inbound         Returns                      Missing                                                                                                          10.0                          Mark Black    Sophia Sato      John Smith             >90  Afternoon          5
+    Inbound         Returns      Service Centres Related                                                                                                           2.0     Electronics          Amy Mendez    Sophia Sato      John Smith            0-30    Morning          5
+    Inbound   Order Related            Installation/demo                                                                                 Something                 4.0                        Jennifer May   Zoe Yamamoto     William Kim On Job Training    Morning          3
+    Inbound    Cancellation                   Not Needed                                                                                                           2.0                       Ryan Thompson    Olivia Wang      Emily Chen           31-60    Evening          5
+    Inbound   Order Related            Installation/demo                                                                                  All good                 2.0     Electronics        David Butler    Olivia Wang      Emily Chen           31-60    Evening          5
+    Inbound         Returns       Reverse Pickup Enquiry                                                                                                          28.0                      Stephen Morris      Wyatt Kim     Michael Lee             >90    Evening          5
+
+---
+
+### Number of Unique Values per Column:
+This count helps identify the diversity of values within each column, which is crucial for understanding the complexity of data processing and normalization needs.
+ChannelName: 3
+TicketCategory: 12
+TicketSubCategory: 52
+CustomerRemarks: 17442
+ResponseTimeMinutes: 2597
+ProductCategory: 10
+AgentName: 1371
+SupervisorName: 40
+ManagerName: 6
+AgentTenure: 5
+AgentShift: 5
+CSATScore: 5
+
+---
+
+### Fields with Limited Unique Values (13 or less):
+These columns have restricted variability and might be suitable for categorization or filtering. They often represent standardized data such as categories or types.
+ChannelName: Outcall, Inbound, Email
+TicketCategory: Product Queries, Order Related, Returns, Cancellation, App Related, Payments related, Refund Related, Feedback, Offers & Cashback, Onboarding related, Others, App/website
+ProductCategory: , LifeStyle, Electronics, Mobile, Home Appliances, Furniture, Home, Books & General merchandise, GiftCard, Affiliates
+ManagerName: Michael Lee, William Kim, John Smith, Olivia Tan, Jennifer Nguyen, Emily Chen
+AgentTenure: >90, On Job Training, 0-30, 31-60, 61-90
+AgentShift: Morning, Evening, Split, Afternoon, Night
+CSATScore: 5, 4, 1, 3, 2
+
+---
+
+### Column Names and Data Types:
+Understanding data types is fundamental for data preparation and manipulation, as it influences how data can be handled computationally.
+ChannelName: object
+TicketCategory: object
+TicketSubCategory: object
+CustomerRemarks: object
+ResponseTimeMinutes: object
+ProductCategory: object
+AgentName: object
+SupervisorName: object
+ManagerName: object
+AgentTenure: object
+AgentShift: object
+CSATScore: int64
+
+---
+
+### Missing Values by Column:
+Columns with many missing values may require cleaning or imputation strategies to ensure the integrity of data analysis or machine learning models.
+ChannelName: 0
+TicketCategory: 0
+TicketSubCategory: 0
+CustomerRemarks: 56530
+ResponseTimeMinutes: 6304
+ProductCategory: 67909
+AgentName: 0
+SupervisorName: 0
+ManagerName: 0
+AgentTenure: 0
+AgentShift: 0
+CSATScore: 0
+
+---
+
+
+--------- END OF RAW DATA MEASURMENTS ---------
+
+--------- START OF CODE ---------
+
+
+```dashboard.py
+# dashboard.py
+import streamlit as st
+from dtreeviz import dtreeviz
+import plotly.express as px
+from data_loader import load_and_preprocess_data
+from exploratory_data_analysis import (
+    plot_csat_score_distribution, 
+    plot_agent_tenure_vs_csat_score, 
+    plot_ticket_category_vs_csat_score, 
+    plot_response_time_vs_csat_score, 
+    generate_customer_remarks_wordcloud, 
+    plot_missing_data_impact
+)
+from feature_selection import perform_feature_selection
+from machine_learning_models import train_and_evaluate_models
+from insights_generator import generate_insights
+def main():
+    st.set_page_config(page_title='Customer Satisfaction Analysis Dashboard', layout='wide')
+    # Load CSS
+    with open('style.css') as f:
+        st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
+    # Load and preprocess data
+    data = load_and_preprocess_data()
+    # Sidebar filters using direct category selection, properly handling 'All' cases
+    st.sidebar.title('Filters')
+    # Extract unique values directly from the data columns
+    channel_options = ['All'] + sorted(data['ChannelName'].dropna().unique().tolist())
+    shift_options = ['All'] + sorted(data['AgentShift'].dropna().unique().tolist())
+    # Include 'None' for missing ProductCategory values
+    category_options = ['All', 'None'] + sorted(data['ProductCategory'].dropna().unique().tolist())
+    # Use these options for the multiselect widgets
+    channel_filter = st.sidebar.multiselect('Channel', options=channel_options, default=['All'])
+    shift_filter = st.sidebar.multiselect('Agent Shift', options=shift_options, default=['All'])
+    category_filter = st.sidebar.multiselect('Product Category', options=category_options, default=['All'])
+    # Apply filters based on user selection
+    if 'All' not in channel_filter:
+        data = data[data['ChannelName'].isin(channel_filter)]
+    if 'All' not in shift_filter:
+        data = data[data['AgentShift'].isin(shift_filter)]
+    if 'All' not in category_filter:
+        if 'None' in category_filter:
+            # Handle entries with missing ProductCategory
+            if len(category_filter) == 1:
+                data = data[data['ProductCategory'].isna()]
+            else:
+                # Include both missing and selected categories
+                selected_categories = [cat for cat in category_filter if cat != 'None']
+                data = data[data['ProductCategory'].isna() | data['ProductCategory'].isin(selected_categories)]
+        else:
+            data = data[data['ProductCategory'].isin(category_filter)]
+    # Display the dashboard title and description
+    st.title('Customer Satisfaction Analysis Dashboard')
+    st.write('This dashboard presents an analysis of customer satisfaction based on the provided dataset.')
+    # CSAT Score Distribution
+    csat_score_distribution = plot_csat_score_distribution(data)
+    st.plotly_chart(csat_score_distribution, use_container_width=True)
+    # Agent Tenure vs CSAT Score
+    agent_tenure_vs_csat_score = plot_agent_tenure_vs_csat_score(data)
+    st.plotly_chart(agent_tenure_vs_csat_score, use_container_width=True)
+    # Ticket Category vs CSAT Score
+    ticket_category_vs_csat_score = plot_ticket_category_vs_csat_score(data)
+    st.plotly_chart(ticket_category_vs_csat_score, use_container_width=True)
+    # Response Time vs CSAT Score
+    response_time_vs_csat_score = plot_response_time_vs_csat_score(data)
+    st.plotly_chart(response_time_vs_csat_score, use_container_width=True)
+    # Customer Remarks Word Cloud
+    wordcloud = generate_customer_remarks_wordcloud(data)
+    st.image(wordcloud.to_array(), use_column_width=True)
+    # Key Factors Influencing CSAT Scores
+    rf_top_features, _ = perform_feature_selection(data, 'CSATScore', 10)
+    top_features_slider = st.slider('Number of Top Features', min_value=5, max_value=len(rf_top_features), value=10, step=1)
+    top_features_fig = px.bar(rf_top_features.head(top_features_slider), x='Importance', y='Feature', orientation='h', color='Importance', color_continuous_scale='Viridis')
+    top_features_fig.update_layout(title=f'Top {top_features_slider} Factors Influencing CSAT Scores', xaxis_title='Importance', yaxis_title='Feature', plot_bgcolor='rgba(0,0,0,0)')
+    st.plotly_chart(top_features_fig, use_container_width=True)
+    # Decision Tree Visualization and Model Evaluation
+    dt_model, rf_model, dt_accuracy, dt_precision, dt_recall, dt_f1, dt_cm_fig, dt_roc_fig, rf_accuracy, rf_precision, rf_recall, rf_f1, rf_cm_fig, rf_roc_fig = train_and_evaluate_models(data, 'CSATScore')
+    # Display Decision Tree Visualization
+    st.subheader('Decision Tree Visualization')
+    st.pyplot(dtreeviz(dt_model, data.drop(columns=['CSATScore']), data['CSATScore'], target_name="CSATScore", feature_names=data.drop(columns=['CSATScore']).columns, class_names=list(map(str, data['CSATScore'].unique())), scale=1.5, orientation='LR', fancy=True, histtype='strip'))
+    # Model Evaluation Metrics
+    col1, col2 = st.columns(2)
+    with col1:
+        st.subheader('Decision Tree Metrics')
+        st.write(f'Accuracy: {dt_accuracy:.2f}')
+        st.write(f'Precision: {dt_precision:.2f}')
+        st.write(f'Recall: {dt_recall:.2f}')
+        st.write(f'F1 Score: {dt_f1:.2f}')
+        st.plotly_chart(dt_cm_fig, use_container_width=True)
+        st.plotly_chart(dt_roc_fig, use_container_width=True)
+    with col2:
+        st.subheader('Random Forest Metrics')
+        st.write(f'Accuracy: {rf_accuracy:.2f}')
+        st.write(f'Precision: {rf_precision:.2f}')
+        st.write(f'Recall: {rf_recall:.2f}')
+        st.write(f'F1 Score: {rf_f1:.2f}')
+        st.plotly_chart(rf_cm_fig, use_container_width=True)
+        st.plotly_chart(rf_roc_fig, use_container_width=True)
+    # Actionable Insights
+    insights = generate_insights(data, rf_top_features)
+    st.subheader('Actionable Insights')
+    for insight in insights:
+        st.text(insight)
+    # Handling Missing Data Impact on CSAT Scores
+    st.subheader('Impact of Missing Data on CSAT Scores')
+    missing_data_impact_fig = plot_missing_data_impact(data)
+    st.plotly_chart(missing_data_impact_fig, use_container_width=True)
+if __name__ == '__main__':
+    main()```
+
+```data_loader.py
+# data_loader.py
+import pandas as pd
+import streamlit as st
+@st.cache_data
+def load_data(file_path):
+    data = pd.read_csv(file_path, na_values=['', ' '])
+    return data
+@st.cache_data
+def preprocess_data(data):
+    # Indicators for missing data
+    data['HasCustomerRemarks'] = data['CustomerRemarks'].notna()
+    data['HasResponseTime'] = data['ResponseTimeMinutes'].notna()
+    data['HasProductCategory'] = data['ProductCategory'].notna()
+    # Categorical features for one-hot encoding, exclude features used in front-end filters
+    categorical_features = ['TicketCategory', 'TicketSubCategory', 'ManagerName', 'SupervisorName']
+    # Retain 'AgentShift' and 'ProductCategory' for UI filtering
+    filter_features = ['AgentShift', 'ProductCategory']
+    # Apply one-hot encoding to categorical features
+    data_encoded = pd.get_dummies(data[categorical_features], prefix=categorical_features, dummy_na=True)
+    data.drop(columns=categorical_features, inplace=True)
+    data = pd.concat([data, data_encoded], axis=1)
+    return data
+@st.cache_data
+def load_and_preprocess_data():
+    file_path = 'data/RawAmazonData.csv'
+    data = load_data(file_path)
+    preprocessed_data = preprocess_data(data)
+    return preprocessed_data
+```
+
+```decision_tree_visualization.py
+## This file is commented out becasue it was moved into the dashboard.py file due to an updated way of rendering the decision tree visualization. (i think?)
+""" # decision_tree_visualization.py
+from dtreeviz import dtreeviz 
+import streamlit.components.v1 as components
+def interactive_decision_tree_viz(model, X_train, y_train, feature_names, class_names, tree_depth=3):
+    viz = dtreeviz(model, X_train, y_train, target_name="CSATScore",
+                   feature_names=feature_names, class_names=list(map(str, class_names)),
+                   tree_depth=tree_depth, orient='LR', fancy=True, histtype='strip')
+    return viz.svg()
+def generate_decision_tree_visualizations(model, X_train, y_train, feature_names, class_names):
+    interactive_html = interactive_decision_tree_viz(model, X_train, y_train, feature_names, class_names)
+    return interactive_html
+ """```
+
+```exploratory_data_analysis.py
+# exploratory_data_analysis.py
+import plotly.express as px
+import plotly.graph_objects as go
+from wordcloud import WordCloud
+def plot_csat_score_distribution(data):
+    fig = px.bar(data['CSATScore'].value_counts().reset_index(), x='index', y='CSATScore', color='index', color_discrete_sequence=['#FF4136', '#FFDC00', '#2ECC40'])
+    fig.update_layout(title='CSAT Score Distribution', xaxis_title='CSAT Score', yaxis_title='Count')
+    return fig
+def plot_agent_tenure_vs_csat_score(data):
+    fig = px.bar(data.groupby('AgentTenure', as_index=False).agg({'CSATScore': 'mean', 'AgentName': 'count'}), x='AgentTenure', y='CSATScore', hover_data=['AgentName'], color='CSATScore', color_continuous_scale='Viridis')
+    fig.update_layout(title='Agent Tenure vs CSAT Score', xaxis_title='Agent Tenure', yaxis_title='Average CSAT Score')
+    return fig
+def plot_ticket_category_vs_csat_score(data):
+    ticket_category_columns = [col for col in data.columns if col.startswith('TicketCategory_')]
+    ticket_subcategory_columns = [col for col in data.columns if col.startswith('TicketSubCategory_')]
+    pivot_data = data.groupby(ticket_subcategory_columns)[['CSATScore'] + ticket_category_columns].mean()
+    fig = go.Figure(data=go.Heatmap(z=pivot_data.values, x=ticket_category_columns, y=pivot_data.index, colorscale='RdYlGn'))
+    fig.update_layout(title='Ticket Category vs CSAT Score', xaxis_title='Ticket Category', yaxis_title='Ticket Subcategory')
+    return fig
+def plot_response_time_vs_csat_score(data):
+    fig = px.scatter(data, x='ResponseTimeMinutes', y='CSATScore', 
+                     color='CSATScore', color_continuous_scale='Bluered',
+                     labels={'ResponseTimeMinutes': 'Response Time (Minutes)', 'CSATScore': 'CSAT Score'})
+    fig.update_layout(title='Response Time vs CSAT Score')
+    return fig
+def generate_customer_remarks_wordcloud(data):
+    text = ' '.join(data['CustomerRemarks'].fillna('').astype(str))
+    text = text.replace("No Remark", "")
+    wordcloud = WordCloud(width=800, height=400, background_color='white').generate(text)
+    return wordcloud
+def plot_missing_data_impact(data):
+    impact_df = data.groupby(['HasCustomerRemarks', 'HasResponseTime', 'HasProductCategory']).agg({'CSATScore': 'mean'}).reset_index()
+    impact_df['Data Completeness'] = impact_df.apply(lambda row: f"Remarks: {'Yes' if row['HasCustomerRemarks'] else 'No'}, Response Time: {'Yes' if row['HasResponseTime'] else 'No'}, Product Category: {'Yes' if row['HasProductCategory'] else 'No'}", axis=1)
+    fig = px.bar(impact_df, x='Data Completeness', y='CSATScore', title='Impact of Missing Data on CSAT Scores', labels={'CSATScore': 'Average CSAT Score'})
+    return fig```
+
+```feature_selection.py
+# feature_selection.py
+import pandas as pd
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.feature_selection import SelectKBest, f_classif
+def select_features_with_random_forest(data, target_column, n_features):
+    X = data.drop(columns=[target_column])  # Use all other columns as features
+    y = data[target_column]
+    rf = RandomForestClassifier(n_estimators=100, random_state=42)
+    rf.fit(X, y)
+    feature_importances = rf.feature_importances_
+    feature_names = X.columns
+    feature_importances_df = pd.DataFrame({'Feature': feature_names, 'Importance': feature_importances})
+    top_features = feature_importances_df.nlargest(n_features, 'Importance')
+    return top_features
+def select_features_with_f_score(data, target_column, n_features):
+    X = data.drop(columns=[target_column])  # Use all other columns as features
+    y = data[target_column]
+    selector = SelectKBest(f_classif, k=n_features)
+    selector.fit(X, y)
+    feature_scores = selector.scores_
+    feature_names = X.columns
+    feature_scores_df = pd.DataFrame({'Feature': feature_names, 'Score': feature_scores})
+    top_features = feature_scores_df.nlargest(n_features, 'Score')
+    return top_features
+def perform_feature_selection(data, target_column, n_features):
+    rf_top_features = select_features_with_random_forest(data, target_column, n_features)
+    f_score_top_features = select_features_with_f_score(data, target_column, n_features)
+    return rf_top_features, f_score_top_features```
+
+```insights_generator.py
+# insights_generator.py
+import pandas as pd
+import streamlit as st
+def get_top_features(feature_importance_df, n=5):
+    top_features = feature_importance_df.nlargest(n, 'Importance')
+    return top_features
+def get_agent_tenure_with_highest_csat(data):
+    agent_tenure_csat = data.groupby('AgentTenure')['CSATScore'].mean().reset_index()
+    highest_csat_tenure = agent_tenure_csat.loc[agent_tenure_csat['CSATScore'].idxmax(), 'AgentTenure']
+    return highest_csat_tenure
+def get_ticket_category_subcategory_with_lowest_csat(data, n=3):
+    ticket_category_columns = [col for col in data.columns if col.startswith('TicketCategory_')]
+    ticket_subcategory_columns = [col for col in data.columns if col.startswith('TicketSubCategory_')]
+    ticket_csat = data.groupby(ticket_subcategory_columns)[['CSATScore'] + ticket_category_columns].mean().reset_index()
+    ticket_csat['TicketCategory'] = ticket_csat[ticket_category_columns].idxmax(axis=1).str.replace('TicketCategory_', '')
+    ticket_csat['TicketSubCategory'] = ticket_csat[ticket_subcategory_columns].idxmax(axis=1).str.replace('TicketSubCategory_', '')
+    lowest_csat_tickets = ticket_csat.nsmallest(n, 'CSATScore')
+    return lowest_csat_tickets
+def generate_insights(data, feature_importance_df):
+    top_features = get_top_features(feature_importance_df)
+    highest_csat_tenure = get_agent_tenure_with_highest_csat(data)
+    lowest_csat_tickets = get_ticket_category_subcategory_with_lowest_csat(data)
+    with st.expander("Actionable Insights"):
+        st.markdown(f"**Top 5 Features Influencing CSAT Scores:**")
+        for feature, importance in zip(top_features['Feature'], top_features['Importance']):
+            st.markdown(f"- {feature} (Importance: {importance:.2f})")
+        st.markdown(f"**AgentTenure Category with Highest Average CSAT Score:**")
+        st.markdown(f"- {highest_csat_tenure}")
+        st.markdown(f"**Top 3 TicketCategory and TicketSubCategory Combinations with Lowest Average CSAT Scores:**")
+        for _, row in lowest_csat_tickets.iterrows():
+            st.markdown(f"- {row['TicketCategory']} - {row['TicketSubCategory']} (Average CSAT Score: {row['CSATScore']:.2f})")
+    return top_features, highest_csat_tenure, lowest_csat_tickets```
+
+```machine_learning_models.py
+# machine_learning_models.py
+from sklearn.model_selection import train_test_split
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, confusion_matrix, roc_curve, auc
+import plotly.graph_objects as go
+import plotly.figure_factory as ff
+def split_data(data, target_column, test_size=0.2, random_state=42):
+    X = data.drop(columns=[target_column])  # Use all other columns as features
+    y = data[target_column]
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size, random_state=random_state)
+    return X_train, X_test, y_train, y_test
+def train_decision_tree(X_train, y_train, max_depth=5, random_state=42):
+    dt = DecisionTreeClassifier(max_depth=max_depth, random_state=random_state)
+    dt.fit(X_train, y_train)
+    return dt
+def train_random_forest(X_train, y_train, n_estimators=100, max_depth=5, random_state=42):
+    rf = RandomForestClassifier(n_estimators=n_estimators, max_depth=max_depth, random_state=random_state)
+    rf.fit(X_train, y_train)
+    return rf
+def evaluate_model(model, X_test, y_test):
+    y_pred = model.predict(X_test)
+    accuracy = accuracy_score(y_test, y_pred)
+    precision = precision_score(y_test, y_pred, average='weighted')
+    recall = recall_score(y_test, y_pred, average='weighted')
+    f1 = f1_score(y_test, y_pred, average='weighted')
+    cm = confusion_matrix(y_test, y_pred)
+    fpr, tpr, _ = roc_curve(y_test, model.predict_proba(X_test)[:, 1])
+    roc_auc = auc(fpr, tpr)
+    return accuracy, precision, recall, f1, cm, fpr, tpr, roc_auc
+def plot_confusion_matrix(cm, labels):
+    fig = ff.create_annotated_heatmap(cm, x=labels, y=labels, colorscale='Viridis')
+    fig.update_layout(title='Confusion Matrix', xaxis_title='Predicted', yaxis_title='Actual')
+    return fig
+def plot_roc_curve(fpr, tpr, roc_auc, model_name):
+    fig = go.Figure(data=go.Scatter(x=fpr, y=tpr, mode='lines', name=model_name))
+    fig.add_shape(type='line', line=dict(dash='dash'), x0=0, x1=1, y0=0, y1=1)
+    fig.update_layout(title=f'ROC Curve (AUC = {roc_auc:.2f})', xaxis_title='False Positive Rate', yaxis_title='True Positive Rate')
+    return fig
+def train_and_evaluate_models(data, target_column):
+    X_train, X_test, y_train, y_test = split_data(data, target_column)
+    dt_model = train_decision_tree(X_train, y_train)
+    rf_model = train_random_forest(X_train, y_train)
+    dt_accuracy, dt_precision, dt_recall, dt_f1, dt_cm, dt_fpr, dt_tpr, dt_roc_auc = evaluate_model(dt_model, X_test, y_test)
+    rf_accuracy, rf_precision, rf_recall, rf_f1, rf_cm, rf_fpr, rf_tpr, rf_roc_auc = evaluate_model(rf_model, X_test, y_test)
+    dt_cm_fig = plot_confusion_matrix(dt_cm, labels=list(data[target_column].unique()))
+    rf_cm_fig = plot_confusion_matrix(rf_cm, labels=list(data[target_column].unique()))
+    dt_roc_fig = plot_roc_curve(dt_fpr, dt_tpr, dt_roc_auc, 'Decision Tree')
+    rf_roc_fig = plot_roc_curve(rf_fpr, rf_tpr, rf_roc_auc, 'Random Forest')
+    return dt_model, rf_model, dt_accuracy, dt_precision, dt_recall, dt_f1, dt_cm_fig, dt_roc_fig, rf_accuracy, rf_precision, rf_recall, rf_f1, rf_cm_fig, rf_roc_fig```
+
+```style.css
+:root {
+    --primary-color: #1e88e5;
+    --background-color: #f0f0f0;
+    --text-color: #333;
+    --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --border-radius: 8px;
+    --transition-speed: 0.3s;
+}
+body {
+    background-color: var(--background-color);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: var(--text-color);
+}
+h1 {
+    color: var(--primary-color);
+    font-size: 36px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+.sidebar .sidebar-content {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+}
+.sidebar .title {
+    color: var(--primary-color);
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+.main .plotly-chart, .main .expander, .model-evaluation {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    margin-bottom: 20px;
+    transition: box-shadow var(--transition-speed);
+}
+.main .plotly-chart:hover, .main .expander:hover, .model-evaluation:hover {
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+}
+.main .slider {
+    margin-bottom: 20px;
+}
+.main .expander-header {
+    color: var(--primary-color);
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+.model-evaluation .subheader {
+    color: var(--primary-color);
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+.model-evaluation .metric {
+    margin-bottom: 10px;
+}```
+
+
+--------- END OF CODE ---------
+
+--------- START OF PROMPT ---------
+
+Listen, listen. I have this code file, but I'm not joking. I have gone back and forth with you, ChatGPT, and other message over 50 times, and I cannot get the error messages to go away in the terminal. And it's the same ones repeating over and over again. I don't know much about coding, but I know that it stems from certain items having to be converted to float from string or something like that. The reason why it's complicated is because it's using machine learning or some sort of advanced modules in which only numeric values are allowed to be used. And so they use something called one-hot encoding, which I know you are aware of. However, there are also times in the app where one-hot coding is not used because of things like the user drop-down filter menu and stuff like that. The deal is, I frankly don't give a fuck how it's completed or how it works as long as on the front end, in my experience, everything works.
+
+
+I swear that when I tell you instructions and then you look at the code it's like you just believe the code in front of you and try to make as minimal changes as possible to keep the code intact but fix one little thing and that little thing never ever has worked for the last 50 messages so I am I'm not even asking you I'm begging you to really try to understand the entire code as a whole and all the codes together and understand the raw data from the samples which is printed verbatim along with all the measurements you could ever ask for about the raw data this includes a value types samples like I have gone beyond way beyond what a normal user would do to put together an entire package for you to be as efficiently and optimally trained on everything as possible but still I swear it's like you just do the bare minimum and just get yourself in a fucking rut over and over and over again and it's like bro please actually realize the issue here it could be multi-step and you know what maybe the whole fucking thing just won't fucking work in the end maybe it's impossible maybe I'm asking too much but you know what I need you to tell me that if that's the case rather than let me spin around here and waste my whole fucking day doing something that just doesn't work in the end and you know it wouldn't work in the end all along you are my only form of generating code I do not write code on my own you tell me what I should do period do you got it
+
+--------- END OF PROMPT ---------
+
+Instructions for the output format:
+- Output code without descriptions, unless it is important.
+- Minimize prose, comments and empty lines.
+- Only show the relevant code that needs to be modified. Use comments to represent the parts that are not modified.
+- Make it easy to copy and paste.
+- Consider other possibilities to achieve the result, do not be limited by the prompt.

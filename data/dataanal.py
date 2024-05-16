@@ -1,26 +1,38 @@
-import pandas as pd
+import json
 
-# Load the data from CSV file
-file_path = r'C:\AmazonStreamlit\data\RawAmazonData.csv'
-data = pd.read_csv(file_path)
+def update_viewed_by_details(file_path):
+    # Load the JSON data from the file
+    with open(file_path, 'r', encoding='utf-8') as file:
+        data = json.load(file)
 
-# Fields to analyze for unique values
-fields = ['ChannelName', 'AgentShift', 'ProductCategory']
+    # Iterate over each conversation
+    for conversation in data:
+        messages = conversation['messages']
+        prev_sender = None
 
-# Path for the output text file
-output_path = r'C:\AmazonStreamlit\data\unique_values.txt'
+        # Iterate backwards through the messages to check for unviewed messages by the same sender
+        for i in range(len(messages) - 1, -1, -1):
+            if 'viewed_by' not in messages[i]:
+                # Insert default viewed_by details if missing
+                messages[i]['viewed_by'] = {
+                    'viewer': 'UNREAD',
+                    'view_timestamp': 'UNREAD'
+                }
+                prev_sender = messages[i]['sender']
+            elif messages[i]['sender'] == prev_sender:
+                # Check if the previous message was from the same sender and also missing viewed_by details
+                if 'viewed_by' not in messages[i]:
+                    messages[i]['viewed_by'] = {
+                        'viewer': 'UNREAD',
+                        'view_timestamp': 'UNREAD'
+                    }
 
-# Open the file in write mode
-with open(output_path, 'w') as file:
-    for field in fields:
-        # Get unique values, consider NaN as a unique value
-        unique_values = data[field].unique()
-        # Replace nan with a string to indicate blanks explicitly
-        unique_values = [str(val) if pd.notna(val) else 'BLANK' for val in unique_values]
-        
-        # Write to file
-        file.write(f"Unique values in {field}:\n")
-        file.writelines(f"{value}\n" for value in unique_values)
-        file.write("\n")
+    # Save the updated JSON data back to the file
+    with open(file_path, 'w', encoding='utf-8') as file:
+        json.dump(data, file, indent=4, ensure_ascii=False)
 
-print(f"Unique values have been written to {output_path}")
+# Set the path to your JSON file
+file_path = "C:\\Users\\erikl\\Desktop\\TRASCRIPTNARJAN.json"
+update_viewed_by_details(file_path)
+
+print("Updated JSON file has been saved.")

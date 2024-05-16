@@ -1,0 +1,100 @@
+--------- START OF RAW DATA MEASURMENTS ---------
+
+
+#### This analysis provides insights into the CSV data structure and content, aiding in data processing and understanding. ####
+
+
+CSV Source path: AmazonStreamlit\data\RawAmazonData.csv
+
+
+### Sample of First 20 Rows:
+These rows give a quick glimpse into what types of data the dataset contains and how they are formatted.
+ChannelName  TicketCategory            TicketSubCategory                                                                           CustomerRemarks ResponseTimeMinutes ProductCategory           AgentName SupervisorName     ManagerName     AgentTenure AgentShift  CSATScore
+    Outcall Product Queries Product Specific Information                                                                                                           2.0                       Vicki Collins      Dylan Kim     Michael Lee             >90    Morning          5
+    Inbound   Order Related            Installation/demo                                                                                                          22.0                        Duane Norman   Jackson Park     William Kim On Job Training    Evening          5
+    Inbound         Returns       Reverse Pickup Enquiry                                                                                                          20.0                      Patrick Flores    Olivia Wang      John Smith             >90    Evening          5
+    Inbound    Cancellation                   Not Needed                                                                                                           2.0                 Christopher Sanchez Austin Johnson     Michael Lee            0-30    Morning          5
+      Email         Returns              Fraudulent User                                                                                                         206.0                      Desiree Newton      Emma Park      John Smith            0-30    Morning          5
+    Outcall Product Queries Product Specific Information                                                                                                         501.0                       Shannon Hicks    Aiden Patel      Olivia Tan             >90    Morning          5
+    Inbound         Returns       Exchange / Replacement                                                                                 Very good                 6.0                         Laura Smith  Evelyn Kimura Jennifer Nguyen On Job Training    Evening          5
+    Inbound         Returns                      Missing Shopzilla app and it's all coustomer care services is very good service provided all time                 4.0                         David Smith   Nathan Patel      John Smith             >90      Split          5
+    Inbound     App Related              General Enquiry                                                                                                           5.0                       Tabitha Ayala  Amelia Tanaka     Michael Lee           31-60    Evening          5
+    Outcall         Returns               Return request                                                                                                           2.0                        Carla Morgan   Nathan Patel      Emily Chen            0-30    Evening          4
+    Inbound   Order Related                      Delayed                                                                                  Very bad                30.0       LifeStyle       Stanley Hogan    Harper Wong      Emily Chen             >90      Split          1
+    Inbound     App Related              General Enquiry                                                                                                           3.0                       Timothy Scott   Zoe Yamamoto     William Kim On Job Training    Morning          4
+    Inbound     App Related              General Enquiry                                                                                                          66.0                       Shannon Hicks    Aiden Patel      Olivia Tan             >90    Morning          4
+    Inbound         Returns       Reverse Pickup Enquiry                                                                                                          18.0                         Mark Wilson  Scarlett Chen      John Smith            0-30    Morning          5
+    Inbound         Returns                      Missing                                                                                                          10.0                          Mark Black    Sophia Sato      John Smith             >90  Afternoon          5
+    Inbound         Returns      Service Centres Related                                                                                                           2.0     Electronics          Amy Mendez    Sophia Sato      John Smith            0-30    Morning          5
+    Inbound   Order Related            Installation/demo                                                                                 Something                 4.0                        Jennifer May   Zoe Yamamoto     William Kim On Job Training    Morning          3
+    Inbound    Cancellation                   Not Needed                                                                                                           2.0                       Ryan Thompson    Olivia Wang      Emily Chen           31-60    Evening          5
+    Inbound   Order Related            Installation/demo                                                                                  All good                 2.0     Electronics        David Butler    Olivia Wang      Emily Chen           31-60    Evening          5
+    Inbound         Returns       Reverse Pickup Enquiry                                                                                                          28.0                      Stephen Morris      Wyatt Kim     Michael Lee             >90    Evening          5
+
+---
+
+### Number of Unique Values per Column:
+This count helps identify the diversity of values within each column, which is crucial for understanding the complexity of data processing and normalization needs.
+ChannelName: 3
+TicketCategory: 12
+TicketSubCategory: 52
+CustomerRemarks: 17442
+ResponseTimeMinutes: 2597
+ProductCategory: 10
+AgentName: 1371
+SupervisorName: 40
+ManagerName: 6
+AgentTenure: 5
+AgentShift: 5
+CSATScore: 5
+
+---
+
+### Fields with Limited Unique Values (13 or less):
+These columns have restricted variability and might be suitable for categorization or filtering. They often represent standardized data such as categories or types.
+ChannelName: Outcall, Inbound, Email
+TicketCategory: Product Queries, Order Related, Returns, Cancellation, App Related, Payments related, Refund Related, Feedback, Offers & Cashback, Onboarding related, Others, App/website
+ProductCategory: , LifeStyle, Electronics, Mobile, Home Appliances, Furniture, Home, Books & General merchandise, GiftCard, Affiliates
+ManagerName: Michael Lee, William Kim, John Smith, Olivia Tan, Jennifer Nguyen, Emily Chen
+AgentTenure: >90, On Job Training, 0-30, 31-60, 61-90
+AgentShift: Morning, Evening, Split, Afternoon, Night
+CSATScore: 5, 4, 1, 3, 2
+
+---
+
+### Column Names and Data Types:
+Understanding data types is fundamental for data preparation and manipulation, as it influences how data can be handled computationally.
+ChannelName: object
+TicketCategory: object
+TicketSubCategory: object
+CustomerRemarks: object
+ResponseTimeMinutes: object
+ProductCategory: object
+AgentName: object
+SupervisorName: object
+ManagerName: object
+AgentTenure: object
+AgentShift: object
+CSATScore: int64
+
+---
+
+### Missing Values by Column:
+Columns with many missing values may require cleaning or imputation strategies to ensure the integrity of data analysis or machine learning models.
+ChannelName: 0
+TicketCategory: 0
+TicketSubCategory: 0
+CustomerRemarks: 56530
+ResponseTimeMinutes: 6304
+ProductCategory: 67909
+AgentName: 0
+SupervisorName: 0
+ManagerName: 0
+AgentTenure: 0
+AgentShift: 0
+CSATScore: 0
+
+---
+
+
+--------- END OF RAW DATA MEASURMENTS ---------

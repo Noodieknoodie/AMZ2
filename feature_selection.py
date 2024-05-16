@@ -1,10 +1,9 @@
-# feature_selection.py
 import pandas as pd
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.feature_selection import SelectKBest, f_classif
 
 def select_features_with_random_forest(data, target_column, n_features):
-    X = data.drop(columns=[target_column])  # Use all other columns as features
+    X = data.drop(columns=[target_column]).select_dtypes(include=[int, float])
     y = data[target_column]
     rf = RandomForestClassifier(n_estimators=100, random_state=42)
     rf.fit(X, y)
@@ -15,8 +14,9 @@ def select_features_with_random_forest(data, target_column, n_features):
     return top_features
 
 def select_features_with_f_score(data, target_column, n_features):
-    X = data.drop(columns=[target_column])  # Use all other columns as features
+    X = data.drop(columns=[target_column]).select_dtypes(include=[int, float])
     y = data[target_column]
+    n_features = min(n_features, X.shape[1])  # Ensure n_features is not greater than the number of available features
     selector = SelectKBest(f_classif, k=n_features)
     selector.fit(X, y)
     feature_scores = selector.scores_
