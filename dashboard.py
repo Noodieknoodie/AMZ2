@@ -33,17 +33,32 @@ def main():
     st.sidebar.title('Filters')
 
     # Extract unique values from the one-hot encoded columns
-    channel_columns = [col for col in data.columns if col.startswith('ChannelName_')]
-    shift_columns = [col for col in data.columns if col.startswith('AgentShift_')]
-    category_columns = [col for col in data.columns if col.startswith('ProductCategory_')]
+    channel_columns = [col.replace('ChannelName_', '') for col in data.columns if col.startswith('ChannelName_')]
+    shift_columns = [col.replace('AgentShift_', '') for col in data.columns if col.startswith('AgentShift_')]
+    category_columns = [col.replace('ProductCategory_', '') for col in data.columns if col.startswith('ProductCategory_')]
+
+    # Add "ALL" option to each filter
+    channel_columns.insert(0, 'ALL')
+    shift_columns.insert(0, 'ALL')
+    category_columns.insert(0, 'ALL')
+    category_columns.append('No Product Category')
 
     # Create multiselect widgets for each category
-    channel_filter = st.sidebar.multiselect('Channel', options=channel_columns, default=channel_columns)
-    shift_filter = st.sidebar.multiselect('Agent Shift', options=shift_columns, default=shift_columns)
-    category_filter = st.sidebar.multiselect('Product Category', options=category_columns, default=category_columns)
+    channel_filter = st.sidebar.multiselect('Channel', options=channel_columns, default=['ALL'])
+    shift_filter = st.sidebar.multiselect('Agent Shift', options=shift_columns, default=['ALL'])
+    category_filter = st.sidebar.multiselect('Product Category', options=category_columns, default=['ALL'])
 
     # Apply filters based on user selection
-    data_filtered = data[data[channel_filter + shift_filter + category_filter].any(axis=1)]
+    if 'ALL' in channel_filter:
+        channel_filter = channel_columns[1:]  # Exclude 'ALL'
+    if 'ALL' in shift_filter:
+        shift_filter = shift_columns[1:]  # Exclude 'ALL'
+    if 'ALL' in category_filter:
+        category_filter = category_columns[1:-1]  # Exclude 'ALL' and 'No Product Category'
+    if 'No Product Category' in category_filter:
+        data_filtered = data[(data[channel_filter + shift_filter].any(axis=1)) & (data['ProductCategory'].isna() | data[category_filter].any(axis=1))]
+    else:
+        data_filtered = data[data[channel_filter + shift_filter + category_filter].any(axis=1)]
 
     # Display the dashboard title and description
     st.title('Customer Satisfaction Analysis Dashboard')
