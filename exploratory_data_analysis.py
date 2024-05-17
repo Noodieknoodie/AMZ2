@@ -16,15 +16,9 @@ def plot_agent_tenure_vs_csat_score(data):
 
 def plot_ticket_category_vs_csat_score(data):
     ticket_category_columns = [col for col in data.columns if col.startswith('TicketCategory_')]
-    ticket_subcategory_columns = [col for col in data.columns if col.startswith('TicketSubCategory_')]
-    pivot_data = data.groupby(ticket_subcategory_columns)['CSATScore'].mean().reset_index()
-    fig = go.Figure(data=go.Heatmap(
-        z=pivot_data['CSATScore'],
-        x=pivot_data[ticket_category_columns].idxmax(axis=1),
-        y=pivot_data[ticket_subcategory_columns].idxmax(axis=1),
-        colorscale='RdYlGn'
-    ))
-    fig.update_layout(title='Ticket Category vs CSAT Score', xaxis_title='Ticket Category', yaxis_title='Ticket Subcategory')
+    pivot_data = data.groupby(ticket_category_columns)['CSATScore'].mean().reset_index()
+    pivot_data['TicketCategory'] = pivot_data[ticket_category_columns].idxmax(axis=1).str.replace('TicketCategory_', '')
+    fig = px.bar(pivot_data, x='TicketCategory', y='CSATScore', color='CSATScore', title='Average CSAT Score by Ticket Category')
     return fig
 
 def plot_response_time_vs_csat_score(data):
