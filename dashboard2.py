@@ -23,22 +23,27 @@ local_css("style.css")
 def load_data():
     try:
         data = pd.read_csv('data/RawAmazonData.csv')
-        data = data.copy()
         data.loc[data['ProductCategory'].isna(), 'ProductCategory'] = 'No Product Category'
         data.loc[data['AgentShift'].isna(), 'AgentShift'] = 'No Agent Shift'
         return data
     except Exception as e:
         st.error(f"Failed to load data: {e}")
-        return pd.DataFrame()  # Return an empty DataFrame on failure
+        return pd.DataFrame()
 
 data = load_data()
 
 def initialize_state():
     if 'init' not in st.session_state:
+        channel_list = data['ChannelName'].unique().tolist()
+        product_list = data['ProductCategory'].unique().tolist()
+        shift_list = data['AgentShift'].unique().tolist()
         st.session_state.update({
-            'selected_channels': data['ChannelName'].unique().tolist(),
-            'selected_products': data['ProductCategory'].unique().tolist(),
-            'selected_shifts': data['AgentShift'].unique().tolist(),
+            'selected_channels': channel_list,
+            'selected_products': product_list,
+            'selected_shifts': shift_list,
+            'select_all_channels': True,
+            'select_all_products': True,
+            'select_all_shifts': True,
             'init': True,
         })
 
@@ -46,13 +51,34 @@ initialize_state()
 
 tab_home, tab_data_table, tab_eda = st.tabs(['Home', 'Data Table', 'Exploratory Data Analysis'])
 
-if st.session_state.get('show_filters', True):
-    st.sidebar.header('Filter Options')
-
 def filter_section(key, options, title):
     with st.sidebar.expander(title):
-        select_all = st.checkbox('Select All', True, key=f'select_all_{key}')
-        return st.multiselect(f'Select {title}:', options=options, default=options if select_all else [], key=key)
+        select_all_key = f'select_all_{key}'
+        selected_items_key = f'selected_{key}'
+        
+        # Initialize session state for selected items if not already done
+        if selected_items_key not in st.session_state:
+            st.session_state[selected_items_key] = options.tolist()
+
+        # Event handler for updating session state when "Select All" is checked/unchecked
+        def update_selected_items():
+            if st.session_state[select_all_key]:
+                st.session_state[selected_items_key] = options.tolist()
+            else:
+                st.session_state[selected_items_key] = []
+
+        # Checkbox for "Select All"
+        st.checkbox('Select All', value=st.session_state.get(select_all_key, True), key=select_all_key, on_change=update_selected_items)
+
+        # Event handler for updating "Select All" when individual items are selected/deselected
+        def update_select_all():
+            all_selected = set(st.session_state[selected_items_key]) == set(options)
+            st.session_state[select_all_key] = all_selected
+
+        # Multiselect dropdown
+        selected_items = st.multiselect(f'Select {title}:', options=options, default=st.session_state[selected_items_key], key=selected_items_key, on_change=update_select_all)
+
+        return selected_items
 
 selected_channels = filter_section('channels', data['ChannelName'].unique(), 'Channels')
 selected_products = filter_section('products', data['ProductCategory'].unique(), 'Product Categories')
@@ -65,7 +91,7 @@ with tab_home:
     st.write('Team Members: Ahmed Mohamad, Cyrus Cheng, Daniel Kulik, Erik Lars Knudsen, Gavin Fisher Detert, Osvaldo Flores, Teyonna Fegler, Trevon Sorlin Gagnon')
 
 with tab_data_table:
-    if not selected_channels or not selected_products or not selected_shifts:
+    if len(selected_channels) == 0 or len(selected_products) == 0 or len(selected_shifts) == 0:
         st.warning("Please select at least one option in each category.")
     else:
         filtered_data = data[
@@ -76,7 +102,7 @@ with tab_data_table:
         display_data_table(filtered_data)
 
 with tab_eda:
-    if not selected_channels or not selected_products or not selected_shifts:
+    if len(selected_channels) == 0 or len(selected_products) == 0 or len(selected_shifts) == 0:
         st.warning("Please select at least one option in each category.")
     else:
         filtered_data = data[
