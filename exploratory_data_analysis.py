@@ -3,7 +3,9 @@ import plotly.graph_objects as go
 from wordcloud import WordCloud
 
 def plot_csat_score_distribution(data):
-    fig = px.bar(data['CSATScore'].value_counts().reset_index(), x='index', y='CSATScore', color='index', color_discrete_sequence=['#FF4136', '#FFDC00', '#2ECC40'])
+    csat_counts = data['CSATScore'].value_counts().reset_index()
+    csat_counts.columns = ['CSATScore', 'count']
+    fig = px.bar(csat_counts, x='CSATScore', y='count', color='CSATScore', color_discrete_sequence=['#FF4136', '#FFDC00', '#2ECC40'])
     fig.update_layout(title='CSAT Score Distribution', xaxis_title='CSAT Score', yaxis_title='Count')
     return fig
 
