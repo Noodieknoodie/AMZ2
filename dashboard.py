@@ -65,7 +65,10 @@ def main():
     category_filter = [f'ProductCategory_{cat}' for cat in category_filter]
 
     if 'ProductCategory_nan' in category_filter:
-        data_filtered = data[(data[channel_filter + shift_filter].any(axis=1)) & (data['ProductCategory'].isna() | data[category_filter].any(axis=1))]
+        if 'ProductCategory' in data.columns:
+            data_filtered = data[(data[channel_filter + shift_filter].any(axis=1)) & (data['ProductCategory'].isna() | data[category_filter].any(axis=1))]
+        else:
+            data_filtered = data[data[channel_filter + shift_filter].any(axis=1)]
     else:
         data_filtered = data[data[channel_filter + shift_filter + category_filter].any(axis=1)]
 

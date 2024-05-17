@@ -21,7 +21,8 @@ def preprocess_data(data):
     # Categorical features for one-hot encoding, including ChannelName and ProductCategory
     categorical_features = ['ChannelName', 'TicketCategory', 'TicketSubCategory', 'ManagerName', 'SupervisorName', 'ProductCategory', 'AgentShift']
     data_encoded = pd.get_dummies(data[categorical_features], prefix=categorical_features, dummy_na=True)
-    data.drop(columns=categorical_features, inplace=True)
+    # Drop original categorical features except 'ProductCategory'
+    data.drop(columns=[col for col in categorical_features if col != 'ProductCategory'], inplace=True)
     data = pd.concat([data, data_encoded], axis=1)
 
     # Impute missing numeric values, excluding ResponseTimeMinutes
