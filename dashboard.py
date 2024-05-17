@@ -48,6 +48,9 @@ def main():
     shift_filter = st.sidebar.multiselect('Agent Shift', options=shift_columns, default=['ALL'])
     category_filter = st.sidebar.multiselect('Product Category', options=category_columns, default=['ALL'])
 
+    # Debug: Print DataFrame columns before applying filters
+    st.write("DataFrame columns before applying filters:", data.columns.tolist())
+
     # Apply filters based on user selection
     if 'ALL' in channel_filter:
         channel_filter = channel_columns[1:]  # Exclude 'ALL'
@@ -59,6 +62,9 @@ def main():
         data_filtered = data[(data[channel_filter + shift_filter].any(axis=1)) & (data['ProductCategory'].isna() | data[category_filter].any(axis=1))]
     else:
         data_filtered = data[data[channel_filter + shift_filter + category_filter].any(axis=1)]
+
+    # Debug: Print DataFrame columns after applying filters
+    st.write("DataFrame columns after applying filters:", data_filtered.columns.tolist())
 
     # Display the dashboard title and description
     st.title('Customer Satisfaction Analysis Dashboard')
