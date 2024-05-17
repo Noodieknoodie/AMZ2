@@ -58,7 +58,13 @@ def main():
         shift_filter = shift_columns[1:]  # Exclude 'ALL'
     if 'ALL' in category_filter:
         category_filter = category_columns[1:-1]  # Exclude 'ALL' and 'No Product Category'
-    if 'No Product Category' in category_filter:
+
+    # Prepend prefixes to filter values
+    channel_filter = [f'ChannelName_{ch}' for ch in channel_filter]
+    shift_filter = [f'AgentShift_{sh}' for sh in shift_filter]
+    category_filter = [f'ProductCategory_{cat}' for cat in category_filter]
+
+    if 'ProductCategory_nan' in category_filter:
         data_filtered = data[(data[channel_filter + shift_filter].any(axis=1)) & (data['ProductCategory'].isna() | data[category_filter].any(axis=1))]
     else:
         data_filtered = data[data[channel_filter + shift_filter + category_filter].any(axis=1)]
