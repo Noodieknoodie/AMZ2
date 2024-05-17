@@ -1,4 +1,5 @@
-## IN THE ACTUAL DATA THERE IS NO "Nan" value. Its used here for showing purposes only for YOU
+## This is a high level overview of the raw data file. This is a great suppliment to the actual file which is over 80,000 rows and too big to share in full. The raw data is fixed and will never change / not editable. So what you see is what you get. 
+
 
 Sample of First 20 Rows:
 ChannelName  TicketCategory            TicketSubCategory                                                                           CustomerRemarks  ResponseTimeMinutes ProductCategory           AgentName SupervisorName     ManagerName     AgentTenure AgentShift  CSATScore
