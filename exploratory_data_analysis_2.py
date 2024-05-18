@@ -26,7 +26,7 @@ def plot_agent_tenure_vs_csat_score(data):
     return fig
 
 def plot_product_category_vs_csat_score(data):
-    product_csat = data.groupby('ProductCategory')['CSATScore'].mean().reset_index()
+    product_csat = data.groupby('ProductCategory', observed=True)['CSATScore'].mean().reset_index()
     product_csat = product_csat.sort_values('CSATScore', ascending=False)
     fig = px.bar(product_csat, y='ProductCategory', x='CSATScore', color_discrete_sequence=['#2ca02c'],
                  orientation='h', text='CSATScore')
@@ -40,7 +40,7 @@ def plot_response_time_vs_csat_score(data):
     data_copy = data.copy()
     data_copy.loc[:, 'ResponseTimeBucket'] = pd.cut(data_copy['ResponseTimeMinutes'], bins=[0, 15, 30, 60, float('inf')], 
                                                     labels=['0-15', '15-30', '30-60', '60+'], include_lowest=True)
-    response_csat = data_copy.groupby('ResponseTimeBucket')['CSATScore'].mean().reset_index()
+    response_csat = data_copy.groupby('ResponseTimeBucket', observed=True)['CSATScore'].mean().reset_index()
     fig = px.line(response_csat, x='ResponseTimeBucket', y='CSATScore', markers=True, color_discrete_sequence=['#9467bd'],
                   labels={'ResponseTimeBucket': 'Response Time (Minutes)', 'CSATScore': 'Average CSAT Score'})
     fig.update_layout(title='Response Time vs CSAT Score', xaxis_title='Response Time (Minutes)',
@@ -70,7 +70,7 @@ def plot_missing_data_impact(data):
             data_copy.loc[:, 'Has' + column] = ~data_copy[column].isin([placeholders[column]])
         else:
             data_copy.loc[:, 'Has' + column] = data_copy[column].notnull()
-        impact_df = data_copy.groupby('Has' + column)['CSATScore'].mean().reset_index()
+        impact_df = data_copy.groupby('Has' + column, observed=True)['CSATScore'].mean().reset_index()
         impact_df['count'] = data_copy.groupby('Has' + column).size().reset_index(name='count')['count']
         impact_df['Has' + column] = impact_df['Has' + column].map({True: 'Present', False: 'Missing'})
         y_min = min(y_min, impact_df['CSATScore'].min())
