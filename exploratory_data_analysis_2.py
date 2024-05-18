@@ -17,7 +17,7 @@ def plot_csat_score_distribution(data):
 
 def plot_agent_tenure_vs_csat_score(data):
     tenure_order = ['On Job Training', '0-30', '31-60', '61-90', '>90']
-    tenure_csat = data.groupby('AgentTenure')['CSATScore'].mean().reindex(tenure_order).reset_index()
+    tenure_csat = data.groupby('AgentTenure', observed=True)['CSATScore'].mean().reindex(tenure_order).reset_index()
     fig = px.bar(tenure_csat, x='AgentTenure', y='CSATScore', color_discrete_sequence=['#1f77b4'], text='CSATScore')
     fig.update_traces(texttemplate='%{text:.2f}', textposition='outside')
     fig.update_layout(title='Agent Tenure vs CSAT Score', xaxis_title='Agent Tenure', yaxis_title='Average CSAT Score',
