@@ -34,6 +34,24 @@ def load_data():
 
 data = load_data()
 
+# Custom CSS styles
+st.markdown("""
+    <style>
+    .sidebar-section {
+        height: 50vh;
+        overflow-y: auto;
+        margin-bottom: 20px;
+        padding-right: 10px;
+        border: 2px solid #00ff00;
+        border-radius: 5px;
+    }
+    </style>
+""", unsafe_allow_html=True)
+
+# Create two containers for the sidebar: Section 1 and Section 2
+sidebar_section_1 = st.sidebar.container()
+sidebar_section_2 = st.sidebar.container()
+
 filters = {
     'selected_channels': [],
     'selected_products': [],
@@ -83,11 +101,10 @@ def filter_section(key, options, title):
         selected_items = st.multiselect(f'Select {title}:', options=options, default=st.session_state[selected_items_key], key=selected_items_key, on_change=update_select_all)
         return selected_items
 
-# Create two containers for the sidebar: one for filters and one for the chatbox
-sidebar_top = st.sidebar.container()
-sidebar_bottom = st.sidebar.container()
+# Section 1: Filters
+with sidebar_section_1:
+    st.markdown("### DASHBOARD FILTERS")
 
-with sidebar_top:
     if st.session_state.get('active_tab') != 'Heatmap':
         selected_channels = filter_section('channels', data['ChannelName'].unique(), 'Channels')
         selected_products = filter_section('products', data['ProductCategory'].unique(), 'Product Categories')
@@ -101,6 +118,17 @@ with sidebar_top:
     else:
         st.sidebar.write("Use the filters on the Heatmap dashboard.")
 
+# Section 2: AI Chat
+with sidebar_section_2:
+    chatbot_ui()
+
+filters = st.session_state['previous_filters']
+filtered_data = data[
+    (data['ChannelName'].isin(filters['selected_channels'])) &
+    (data['ProductCategory'].isin(filters['selected_products'])) &
+    (data['AgentShift'].isin(filters['selected_shifts']))
+]
+
 with tab_home:
     st.title('Team Amazon Dashboard for B BUS 441 A')
     st.subheader('University of Washington')
@@ -109,28 +137,16 @@ with tab_home:
 
 with tab_data_table:
     if st.session_state.get('active_tab') != 'Heatmap':
-        filters = st.session_state['previous_filters']
         if len(filters['selected_channels']) == 0 or len(filters['selected_products']) == 0 or len(filters['selected_shifts']) == 0:
             st.warning("Please select at least one option in each category.")
         else:
-            filtered_data = data[
-                (data['ChannelName'].isin(filters['selected_channels'])) &
-                (data['ProductCategory'].isin(filters['selected_products'])) &
-                (data['AgentShift'].isin(filters['selected_shifts']))
-            ]
             display_data_table(filtered_data)
 
 with tab_eda:
     if st.session_state.get('active_tab') != 'Heatmap':
-        filters = st.session_state['previous_filters']
         if len(filters['selected_channels']) == 0 or len(filters['selected_products']) == 0 or len(filters['selected_shifts']) == 0:
             st.warning("Please select at least one option in each category.")
         else:
-            filtered_data = data[
-                (data['ChannelName'].isin(filters['selected_channels'])) &
-                (data['ProductCategory'].isin(filters['selected_products'])) &
-                (data['AgentShift'].isin(filters['selected_shifts']))
-            ]
             st.plotly_chart(plot_csat_score_distribution(filtered_data), use_container_width=True)
             st.plotly_chart(plot_agent_tenure_vs_csat_score(filtered_data), use_container_width=True)
             st.plotly_chart(plot_product_category_vs_csat_score(filtered_data), use_container_width=True)
@@ -140,15 +156,9 @@ with tab_eda:
 
 with tab_mirrored_chart:
     if st.session_state.get('active_tab') != 'Heatmap':
-        filters = st.session_state['previous_filters']
         if len(filters['selected_channels']) == 0 or len(filters['selected_products']) == 0 or len(filters['selected_shifts']) == 0:
             st.warning("Please select at least one option in each category.")
         else:
-            filtered_data = data[
-                (data['ChannelName'].isin(filters['selected_channels'])) &
-                (data['ProductCategory'].isin(filters['selected_products'])) &
-                (data['AgentShift'].isin(filters['selected_shifts']))
-            ]
             render_mirrored_bar_chart(filtered_data)
 
 with tab_heatmap:
@@ -157,7 +167,3 @@ with tab_heatmap:
     render_heatmap(data)
 
 st.session_state['active_tab'] = None
-
-# Chatbot section in the bottom half of the sidebar
-with sidebar_bottom:
-    chatbot_ui()
