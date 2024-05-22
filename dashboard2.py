@@ -11,6 +11,7 @@ from exploratory_data_analysis_2 import (
     plot_missing_data_impact
 )
 from heatmap import render_heatmap
+from chatbot import chatbot_ui 
 
 st.set_page_config(layout="wide")
 
@@ -81,18 +82,23 @@ def filter_section(key, options, title):
         selected_items = st.multiselect(f'Select {title}:', options=options, default=st.session_state[selected_items_key], key=selected_items_key, on_change=update_select_all)
         return selected_items
 
-if st.session_state.get('active_tab') != 'Heatmap':
-    selected_channels = filter_section('channels', data['ChannelName'].unique(), 'Channels')
-    selected_products = filter_section('products', data['ProductCategory'].unique(), 'Product Categories')
-    selected_shifts = filter_section('shifts', data['AgentShift'].unique(), 'Agent Shifts')
+# Create two containers for the sidebar: one for filters and one for the chatbox
+sidebar_top = st.sidebar.container()
+sidebar_bottom = st.sidebar.container()
 
-    st.session_state['previous_filters'] = {
-        'selected_channels': selected_channels,
-        'selected_products': selected_products,
-        'selected_shifts': selected_shifts,
-    }
-else:
-    st.sidebar.write("Use the filters on the Heatmap dashboard.")
+with sidebar_top:
+    if st.session_state.get('active_tab') != 'Heatmap':
+        selected_channels = filter_section('channels', data['ChannelName'].unique(), 'Channels')
+        selected_products = filter_section('products', data['ProductCategory'].unique(), 'Product Categories')
+        selected_shifts = filter_section('shifts', data['AgentShift'].unique(), 'Agent Shifts')
+
+        st.session_state['previous_filters'] = {
+            'selected_channels': selected_channels,
+            'selected_products': selected_products,
+            'selected_shifts': selected_shifts,
+        }
+    else:
+        st.sidebar.write("Use the filters on the Heatmap dashboard.")
 
 with tab_home:
     st.title('Team Amazon Dashboard for B BUS 441 A')
@@ -150,3 +156,7 @@ with tab_heatmap:
     render_heatmap(data)
 
 st.session_state['active_tab'] = None
+
+# Chatbot section in the bottom half of the sidebar
+with sidebar_bottom:
+    chatbot_ui()

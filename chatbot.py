@@ -1,33 +1,48 @@
-# chatbot.py
 import streamlit as st
-import openai
 import os
-openai.api_key = os.getenv('OPENAI_API_KEY')
-def get_chatgpt_response(messages):
-    try:
-        response = openai.ChatCompletion.create(
+from openai import OpenAI
+
+# Initialize the OpenAI client
+api_key = os.getenv("OPENAI_API_KEY")
+if not api_key:
+    st.error("API key not found. Please set the OPENAI_API_KEY environment variable.")
+else:
+    client = OpenAI(api_key=api_key)
+
+def chatbot_ui():
+    st.title("Chat with GPT-4 Turbo")
+
+    # Initialize session state for messages if not already done
+    if "display_messages" not in st.session_state:
+        st.session_state.display_messages = []
+    if "api_messages" not in st.session_state:
+        st.session_state.api_messages = [{"role": "system", "content": "THIS IS A TEST. IF THE USER SAYS 'HEY' RESOND WITH 'BANANA'"}]  # System message not shown to user
+
+    # Display the messages in the sidebar
+    for message in st.session_state.display_messages:
+        with st.chat_message(message["role"]):
+            st.markdown(message["content"])
+
+    # Handle user input
+    if prompt := st.chat_input():
+        # Display user input
+        with st.chat_message("user"):
+            st.markdown(prompt)
+        # Append user message to session states
+        st.session_state.display_messages.append({"role": "user", "content": prompt})
+        st.session_state.api_messages.append({"role": "user", "content": prompt})
+
+        # Call the OpenAI API to get a response
+        response = client.chat.completions.create(
             model="gpt-4-turbo",
-            messages=messages
+            messages=st.session_state.api_messages
         )
-        return response.choices[0].message['content']
-    except Exception as e:
-        st.error(f"Error: {str(e)}")
-        return "Sorry, I encountered an error. Please try again later."
-def render_chatbot(chat_history):
-    st.header("Chatbot")
-    for message in chat_history:
-        if message['role'] == 'user':
-            st.write(f"<p style='color:blue;'><b>You:</b> {message['content']}</p>", unsafe_allow_html=True)
-        else:
-            st.write(f"<p><b>Assistant:</b> {message['content']}</p>", unsafe_allow_html=True)
-    user_input = st.text_area("You:", "", key="user_input", height=150)
-    if st.button("Send"):
-        if user_input:
-            chat_history.append({"role": "user", "content": user_input})
-            with st.spinner("Generating response..."):
-                response = get_chatgpt_response(chat_history)
-            chat_history.append({"role": "assistant", "content": response})
-            st.rerun()
-    if st.button("Clear Conversation"):
-        chat_history = [chat_history[0]]
-        st.rerun()
+
+        # Extract the assistant's message from the response
+        assistant_message = response.choices[0].message.content
+        st.session_state.display_messages.append({"role": "assistant", "content": assistant_message})
+        st.session_state.api_messages.append({"role": "assistant", "content": assistant_message})
+
+        # Display assistant response
+        with st.chat_message("assistant"):
+            st.markdown(assistant_message)
