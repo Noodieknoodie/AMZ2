@@ -1,3 +1,4 @@
+# chatbot.py
 import streamlit as st
 import os
 from openai import OpenAI
@@ -19,10 +20,46 @@ def chatbot_ui():
             {"role": "system", "content": "This is a test. If the user says 'hey', say 'BANANA'."}
         ]
 
-    # Display the messages using Streamlit's chat_message
+    # Custom CSS to improve chat message visibility and styling
+    st.markdown("""
+<style>
+    /* Targets only the chat input field and not other input elements */
+    .stTextInput .st-bk {
+        background-color: #ffffff; /* Set desired background color for the input field */
+    }
+
+    .stTextInput .st-bk:focus {
+        background-color: #ffffff; /* Keeps the background color the same when focused */
+    }
+
+    .chat-message {
+        padding: 10px;
+        margin: 5px;
+        border-radius: 20px;
+        border: 1px solid #ccc;
+    }
+    .chat-message.user {
+        background-color: #e8f0fe; /* User message background */
+        color: black; /* User message text color */
+        text-align: right;
+        float: right; /* Ensure right alignment */
+        clear: both; /* Avoid floating issues */
+    }
+    .chat-message.assistant {
+        background-color: #d1eaff; /* Assistant message background */
+        color: black; /* Assistant message text color */
+        text-align: left;
+        float: left; /* Ensure left alignment */
+        clear: both; /* Avoid floating issues */
+    }
+</style>
+    """, unsafe_allow_html=True)
+
+    # Display the messages
     for message in st.session_state.messages:
-        with st.chat_message(message["role"]):
-            st.write(message["content"])
+        with st.container():
+            role_class = "user" if message["role"] == "user" else "assistant"
+            st.markdown(f'<div class="chat-message {role_class}">{message["content"]}</div>', unsafe_allow_html=True)
 
     # Handle user input
     user_input = st.chat_input("Type your message...", key="user_input")
@@ -49,6 +86,4 @@ def process_user_input(user_input):
         st.rerun()
     except Exception as e:
         st.session_state.messages.append({"role": "assistant", "content": f"Failed to get response: {e}"})
-        st.rerun()
-
-# this is a module fyi not a standalone
+        st.rerun() 
