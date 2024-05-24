@@ -121,7 +121,7 @@ if len(st.session_state['previous_filters']['selected_channels']) > 0 and len(st
 else:
     filtered_data = data
 
-tab_home, tab_data_table, tab_eda, tab_mirrored_chart, tab_heatmap = st.tabs(['Home', 'Data Table', 'Exploratory Data Analysis', 'Mirrored Bar Chart', 'Heatmap'])
+tab_home, tab_data_table, tab_csat_snapshot, tab_employee_mirror_metrics, tab_heatmap = st.tabs(['Home', 'Data Table', 'CSAT Snapshot', 'Employee Mirror Metrics', 'Heatmap'])
 
 with tab_home:
     st.title('Team Amazon Dashboard for B BUS 441 A')
@@ -136,7 +136,7 @@ with tab_data_table:
         else:
             display_data_table(filtered_data)
 
-with tab_eda:
+with tab_csat_snapshot:
     if st.session_state.get('active_tab') != 'Heatmap':
         if len(st.session_state['previous_filters']['selected_channels']) == 0 or len(st.session_state['previous_filters']['selected_products']) == 0 or len(st.session_state['previous_filters']['selected_shifts']) == 0:
             st.warning("Please select at least one option in each category.")
@@ -148,7 +148,7 @@ with tab_eda:
             st.image(generate_customer_remarks_wordcloud(filtered_data).to_array(), use_column_width=True)
             st.plotly_chart(plot_missing_data_impact(filtered_data), use_container_width=True)
 
-with tab_mirrored_chart:
+with tab_employee_mirror_metrics:
     if st.session_state.get('active_tab') != 'Heatmap':
         if len(st.session_state['previous_filters']['selected_channels']) == 0 or len(st.session_state['previous_filters']['selected_products']) == 0 or len(st.session_state['previous_filters']['selected_shifts']) == 0:
             st.warning("Please select at least one option in each category.")

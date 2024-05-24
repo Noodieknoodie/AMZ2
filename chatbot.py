@@ -6,8 +6,9 @@ import os
 from openai import OpenAI
 
 
-# Load message from file
-with open('system_message.txt', 'r') as file:
+# Load message from file 
+# chatbot.py is in the root directory and system_message1.txt is inside the system_messages folder
+with open('system_messages/system_message1.txt', 'r') as file:
     message_content = file.read()
 
 # Initialize the OpenAI client
