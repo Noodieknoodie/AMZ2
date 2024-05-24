@@ -164,4 +164,4 @@ with tab_heatmap:
     st.session_state.pop('previous_filters', None)
     render_heatmap(data)
 
-st.session_state['active_tab'] = None
+# st.session_state['active_tab'] = None
