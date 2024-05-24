@@ -102,12 +102,14 @@ with sidebar_top:
         st.sidebar.write("Use the filters on the Heatmap dashboard.")
 
 with tab_home:
+    st.session_state['active_tab'] = 'Home'
     st.title('Team Amazon Dashboard for B BUS 441 A')
     st.subheader('University of Washington')
     st.write('Professor: Nick Cuhaciyan, Professor at University of Washington')
     st.write('Team Members: Ahmed Mohamad, Cyrus Cheng, Daniel Kulik, Erik Lars Knudsen, Gavin Fisher Detert, Osvaldo Flores, Teyonna Fegler, Trevon Sorlin Gagnon')
 
 with tab_data_table:
+    st.session_state['active_tab'] = 'Data Table'
     if st.session_state.get('active_tab') != 'Heatmap':
         filters = st.session_state['previous_filters']
         if len(filters['selected_channels']) == 0 or len(filters['selected_products']) == 0 or len(filters['selected_shifts']) == 0:
@@ -121,6 +123,7 @@ with tab_data_table:
             display_data_table(filtered_data)
 
 with tab_eda:
+    st.session_state['active_tab'] = 'Exploratory Data Analysis'
     if st.session_state.get('active_tab') != 'Heatmap':
         filters = st.session_state['previous_filters']
         if len(filters['selected_channels']) == 0 or len(filters['selected_products']) == 0 or len(filters['selected_shifts']) == 0:
@@ -139,6 +142,7 @@ with tab_eda:
             st.plotly_chart(plot_missing_data_impact(filtered_data), use_container_width=True)
 
 with tab_mirrored_chart:
+    st.session_state['active_tab'] = 'Mirrored Bar Chart'
     if st.session_state.get('active_tab') != 'Heatmap':
         filters = st.session_state['previous_filters']
         if len(filters['selected_channels']) == 0 or len(filters['selected_products']) == 0 or len(filters['selected_shifts']) == 0:
