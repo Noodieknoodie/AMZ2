@@ -17,15 +17,17 @@ if not api_key:
 else:
     client = OpenAI(api_key=api_key)
 
+
+
+def chatbot_ui():
+    st.title("Chat with an AI Dashboard Assistant")
+    
     # Initialize session state for messages if not already done
     if "messages" not in st.session_state:
         st.session_state.messages = []
         st.session_state.api_messages = [
             {"role": "system", "content": message_content}
-        ]
-
-def chatbot_ui():
-    st.title("Chat with an AI Dashboard Assistant")
+        ]    
 
     # Custom CSS to improve chat message visibility and styling
     st.markdown("""
