@@ -124,12 +124,14 @@ else:
 tab_home, tab_data_table, tab_csat_snapshot, tab_employee_mirror_metrics, tab_heatmap = st.tabs(['Home', 'Data Table', 'CSAT Snapshot', 'Employee Mirror Metrics', 'Heatmap'])
 
 with tab_home:
+    st.session_state['active_tab'] = 'Home'
     st.title('Team Amazon Dashboard for B BUS 441 A')
     st.subheader('University of Washington')
     st.write('Professor: Nick Cuhaciyan, Professor at University of Washington')
     st.write('Team Members: Ahmed Mohamad, Cyrus Cheng, Daniel Kulik, Erik Lars Knudsen, Gavin Fisher Detert, Osvaldo Flores, Teyonna Fegler, Trevon Sorlin Gagnon')
 
 with tab_data_table:
+    st.session_state['active_tab'] = 'Data Table'
     if st.session_state.get('active_tab') != 'Heatmap':
         if len(st.session_state['previous_filters']['selected_channels']) == 0 or len(st.session_state['previous_filters']['selected_products']) == 0 or len(st.session_state['previous_filters']['selected_shifts']) == 0:
             st.warning("Please select at least one option in each category.")
@@ -137,6 +139,7 @@ with tab_data_table:
             display_data_table(filtered_data)
 
 with tab_csat_snapshot:
+    st.session_state['active_tab'] = 'CSAT Snapshot'
     if st.session_state.get('active_tab') != 'Heatmap':
         if len(st.session_state['previous_filters']['selected_channels']) == 0 or len(st.session_state['previous_filters']['selected_products']) == 0 or len(st.session_state['previous_filters']['selected_shifts']) == 0:
             st.warning("Please select at least one option in each category.")
@@ -149,6 +152,7 @@ with tab_csat_snapshot:
             st.plotly_chart(plot_missing_data_impact(filtered_data), use_container_width=True)
 
 with tab_employee_mirror_metrics:
+    st.session_state['active_tab'] = 'Employee Mirror Metrics'
     if st.session_state.get('active_tab') != 'Heatmap':
         if len(st.session_state['previous_filters']['selected_channels']) == 0 or len(st.session_state['previous_filters']['selected_products']) == 0 or len(st.session_state['previous_filters']['selected_shifts']) == 0:
             st.warning("Please select at least one option in each category.")
@@ -156,6 +160,7 @@ with tab_employee_mirror_metrics:
             render_mirrored_bar_chart(filtered_data)
 
 with tab_heatmap:
+    st.session_state['active_tab'] = 'Heatmap'
     st.session_state['active_tab'] = 'Heatmap'
     st.session_state.pop('previous_filters', None)
     render_heatmap(data)

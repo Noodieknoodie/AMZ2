@@ -78,8 +78,11 @@ def chatbot_ui():
 
 def process_user_input(user_input):
     # Append user message to session states
-    st.session_state.messages.append({"role": "user", "content": user_input})
-    st.session_state.api_messages.append({"role": "user", "content": user_input})
+    current_tab = st.session_state.get('active_tab', 'Unknown')
+    user_input_with_context = f"[Current Tab: {current_tab}] {user_input}"
+
+    st.session_state.messages.append({"role": "user", "content": user_input_with_context})
+    st.session_state.api_messages.append({"role": "user", "content": user_input_with_context})
     
     try:
         # Call the OpenAI API to get a response
