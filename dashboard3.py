@@ -161,7 +161,6 @@ with tab_employee_mirror_metrics:
 
 with tab_heatmap:
     st.session_state['active_tab'] = 'Heatmap'
-    st.session_state['active_tab'] = 'Heatmap'
     st.session_state.pop('previous_filters', None)
     render_heatmap(data)
 
