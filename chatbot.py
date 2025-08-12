@@ -1,27 +1,30 @@
-# chatbot.py
-# all streamlit components are correctly named. via the most recent version of streamlit
 import streamlit as st
 import json
 import os
 from openai import OpenAI
 
-
-# Load message from file 
-# chatbot.py is in the root directory and system_message1.txt is inside the system_messages folder
+# Load system message
 with open('system_messages/system_message1.txt', 'r') as file:
     message_content = file.read()
 
 # Initialize the OpenAI client
-api_key = st.secrets["OPENAI_API_KEY"]
-if not api_key:
-    st.error("API key not found. Please set the OPENAI_API_KEY environment variable.")
-else:
-    client = OpenAI(api_key=api_key)
+try:
+    api_key = st.secrets.get("OPENAI_API_KEY", None)
+    if api_key:
+        client = OpenAI(api_key=api_key)
+    else:
+        client = None
+except Exception:
+    client = None
 
 
 
 def chatbot_ui():
     st.title("Chat with an AI Dashboard Assistant")
+    
+    if client is None:
+        st.warning("AI Chat is unavailable. Please configure OpenAI API key in Streamlit Cloud secrets.")
+        return
     
     # Initialize session state for messages if not already done
     if "messages" not in st.session_state:
@@ -30,18 +33,9 @@ def chatbot_ui():
             {"role": "system", "content": message_content}
         ]    
 
-    # Custom CSS to improve chat message visibility and styling
+    # Custom CSS for chat messages
     st.markdown("""
 <style>
-    /* Targets only the chat input field and not other input elements */
-    .stTextInput .st-bk {
-        background-color: #ffffff; /* Set desired background color for the input field */
-    }
-
-    .stTextInput .st-bk:focus {
-        background-color: #ffffff; /* Keeps the background color the same when focused */
-    }
-
     .chat-message {
         padding: 10px;
         margin: 5px;
@@ -49,18 +43,18 @@ def chatbot_ui():
         border: 1px solid #ccc;
     }
     .chat-message.user {
-        background-color: #e8f0fe; /* User message background */
-        color: black; /* User message text color */
+        background-color: #e8f0fe;
+        color: black;
         text-align: right;
-        float: right; /* Ensure right alignment */
-        clear: both; /* Avoid floating issues */
+        float: right;
+        clear: both;
     }
     .chat-message.assistant {
-        background-color: #d1eaff; /* Assistant message background */
-        color: black; /* Assistant message text color */
+        background-color: #d1eaff;
+        color: black;
         text-align: left;
-        float: left; /* Ensure left alignment */
-        clear: both; /* Avoid floating issues */
+        float: left;
+        clear: both;
     }
 </style>
     """, unsafe_allow_html=True)
@@ -77,6 +71,9 @@ def chatbot_ui():
         process_user_input(user_input)
 
 def process_user_input(user_input):
+    if client is None:
+        return
+        
     # Append user message to session states
     st.session_state.messages.append({"role": "user", "content": user_input})
     st.session_state.api_messages.append({"role": "user", "content": user_input})
@@ -96,4 +93,4 @@ def process_user_input(user_input):
         st.rerun()
     except Exception as e:
         st.session_state.messages.append({"role": "assistant", "content": f"Failed to get response: {e}"})
-        st.rerun() #experimental_rerun is outdated. rerun is correct. 
+        st.rerun() 
